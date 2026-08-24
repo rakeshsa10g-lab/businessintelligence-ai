@@ -1,0 +1,74 @@
+# Model routing, prices and generation settings (Architecture Part 3.1, 20).
+#
+# Three routes, not one model. The architecture's argument is that model choice
+# is a routing decision telemetry can re-evaluate, not a religious one — so
+# every model name lives here and nothing under `llm/` hard-codes one.
+#
+# v2.0.0 corrects v1.0.0, which defaulted narration to Sonnet 5 and never
+# listed Opus 5 at all. Part 3.1 selects Opus 5 for narration precisely because
+# it is the one call where a fabricated driver reaches a human, and Haiku 4.5
+# for intent because using a frontier model to fill a four-field schema is
+# waste that cannot be defended.
+version: "2.0.0"
+
+routes:
+  # Job B in Part 3.1: ranked hypotheses + evidence -> persona-specific claims.
+  # Factuality under instruction matters more here than anywhere else.
+  narrate: claude-opus-5
+  # Job A: "why did West revenue drop?" -> {kpi_id, window, dimensions}.
+  # Not wired into any flow yet; declared so the routing table is complete.
+  intent: claude-haiku-4-5
+  # Job C: adversarial second read. ADVISORY ONLY and not built — Part 13.2
+  # classes it as never blocking, and Gate 2 is deterministic by design.
+  verify_advisory: claude-opus-5
+  # Same API surface, same structured-output support: an outage or a refusal
+  # degrades instead of erroring.
+  fallback: claude-sonnet-5
+
+default: claude-opus-5
+
+models:
+  claude-opus-5:
+    provider: anthropic
+    model_id: claude-opus-5
+    input_price_per_mtok_usd: 5.00
+    output_price_per_mtok_usd: 25.00
+    max_output_tokens: 2000
+    context_window: 1000000
+    use_for: [narrate, verify_advisory]
+  claude-sonnet-5:
+    provider: anthropic
+    model_id: claude-sonnet-5
+    input_price_per_mtok_usd: 3.00
+    output_price_per_mtok_usd: 15.00
+    max_output_tokens: 2000
+    context_window: 200000
+    use_for: [fallback, narrate]
+  claude-haiku-4-5:
+    provider: anthropic
+    model_id: claude-haiku-4-5-20251001
+    input_price_per_mtok_usd: 1.00
+    output_price_per_mtok_usd: 5.00
+    max_output_tokens: 1000
+    context_window: 200000
+    use_for: [intent]
+
+generation:
+  # Deterministic decoding. The narrator is not being asked to be creative; it
+  # is being asked to phrase a fixed set of facts, and run-to-run variation
+  # would make the evaluation numbers meaningless.
+  temperature: 0.0
+  timeout_seconds: 60
+  max_retries_transport: 2      # SDK-level retries, connection errors only
+  max_retries_verification: 1   # Part 6.4: one re-narration, then the template
+
+cache:
+  # The system prompt and the schema never change across runs, so a cache hit
+  # costs ~10% of input price. This is what makes "cost per insight" a figure
+  # rather than a guess.
+  enabled: true
+  ttl_seconds: 3600
+  cached_input_price_multiplier: 0.10
+
+prompts:
+  narration: narration_v3_constrained

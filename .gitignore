@@ -1,0 +1,38 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.env
+
+# generated artifacts — reproducible from `python -m data.generate`
+data/warehouse.duckdb
+data/audit.duckdb
+data/graph_checkpoints.sqlite
+# SQLite writes companion WAL/SHM files next to the database. They are not
+# the checkpoint, but they are just as much runtime state, and an orphaned
+# pair survives deletion of the .sqlite itself.
+data/graph_checkpoints.sqlite-wal
+data/graph_checkpoints.sqlite-shm
+data/*.sqlite
+data/*.sqlite-wal
+data/*.sqlite-shm
+
+# Ephemeral walkthrough evidence: regenerate with scripts/_walkthrough.py
+scripts/_walkthrough_out/
+eval/report.md
+
+# Retrieval index — reproducible: `python -m retrieval.build_index` (~60 s).
+# 2 MB of float vectors; regenerating is cheaper and more trustworthy than a
+# binary in version control, and the corpus hash in meta.json makes a stale
+# index detectable anyway.
+data/embedding_index/
+
+# Browser profile left behind by the Antigravity QA pass (16 MB of Chrome
+# cache). Not evidence, not reproducible, not ours.
+.chrome_qa_profile/
+
+# Local tool state
+.claude/
+.pytest_cache/
+.streamlit/secrets.toml

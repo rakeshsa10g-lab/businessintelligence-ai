@@ -1,0 +1,26 @@
+# Personas for the Round 2 prototype (Architecture Part 7.6).
+# The principal is simulated. Swapping this for an OIDC claim is a change at
+# one chokepoint — see ADR-011 and Part 21.1.
+
+personas:
+  priya:
+    display_name: Priya Nair
+    title: Regional Ops Lead, West
+    role: ops_lead
+    user_region: West
+    wants: What broke, who fixes it, by when
+    narrative_style: operational
+  arjun:
+    display_name: Arjun Mehta
+    title: Finance Director
+    role: finance_director
+    user_region: null
+    wants: Rupee impact, margin effect, quarter risk
+    narrative_style: financial
+  meera:
+    display_name: Meera Rao
+    title: Analytics Lead
+    role: analytics_lead
+    user_region: null
+    wants: Method, gate results, lineage, whether to override
+    narrative_style: diagnostic

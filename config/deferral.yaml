@@ -1,0 +1,89 @@
+# Cost-sensitive deferral (Architecture Part 14.4; Mozannar & Sontag 2020).
+#
+# The rule is NOT `confidence < 0.7 -> human`. Selective prediction asks "is
+# the model confident enough?"; learning to defer asks the better question —
+# who is more likely to be right on this case, and is review worth its cost?
+#
+#     E[loss | model] = (1 - p_model) x cost_of_error
+#     E[loss | human] = (1 - p_human) x cost_of_error + review_cost
+#     defer  <=>  E[loss | model] >= E[loss | human]
+#
+# The consequence worth noticing: a HIGH-confidence call on a decision worth
+# little can still be automated when a human would barely beat it, and a
+# MEDIUM call on an expensive decision defers even though the confidence
+# threshold would have passed it. The threshold rule cannot express either.
+version: "1.0.0"
+
+# p_model per confidence band, read from the calibration table at runtime.
+# These are fallbacks used only when a band has no calibration coverage.
+model_accuracy_fallback:
+  HIGH: 0.85
+  MEDIUM: 0.65
+  LOW: 0.40
+  UNCALIBRATED: 0.50
+  INSUFFICIENT: 0.30
+
+# p_human per cause bucket. Seeded, and updated by the `escalated` feedback
+# outcome (Part 15.3) — one of the two things that genuinely learn online,
+# because both are counters and neither needs a model.
+#
+# Humans are not uniformly better. They are strong on internal causes where
+# they can go and look at the system, and weaker on external ones where they
+# are reasoning from the same market events the system read.
+human_accuracy:
+  internal_product: 0.90
+  internal_inventory: 0.85
+  internal_pricing: 0.80
+  internal_data_schema: 0.95    # an engineer can simply check the changelog
+  external_competitor: 0.65
+  external_market: 0.60
+  unknown: 0.55
+  default: 0.70
+
+# What a wrong decision costs, per persona, in INR. The decision value is the
+# persona's scope, not their salary: an ops lead's call affects one region, a
+# finance director's affects the quarter.
+decision_value_inr:
+  ops_lead: 500000
+  analytics_lead: 750000
+  finance_director: 2000000
+  default: 500000
+
+# What review costs. Analyst time is the direct cost; the delay is the one
+# people forget, and on an active incident it is the larger of the two.
+review:
+  analyst_hourly_inr: 3500
+  estimated_review_hours: 1.5
+  # Charged when review would delay a decision on a live incident.
+  delay_cost_per_hour_inr: 12000
+  delay_hours_if_deferred: 4
+  # Beyond this queue depth, review stops being available in practice and the
+  # honest answer is to abstain rather than to promise a human who will not
+  # arrive in time.
+  max_queue_depth: 12
+
+# Guardrails that override the arithmetic. Expected-loss reasoning is sound on
+# average and these are the cases where the average is the wrong frame.
+overrides:
+  # Never automate a disruptive action, whatever the arithmetic says. The
+  # asymmetry between a wrong rollback and a delayed one is not captured by a
+  # single cost_of_error figure.
+  never_automate_lever_ids: [L_CHECKOUT_ROLLBACK, L_PRICING_REVIEW]
+  # A persona with NO rights on a lever cannot have it automated on their
+  # behalf, however confident the system is.
+  #
+  # Request rights are different from approval rights, and conflating them
+  # was an over-broad guardrail that fired on every scenario and left the
+  # expected-loss arithmetic deciding nothing. Automating "escalate to
+  # engineering" for an ops lead means auto-raising the request, not
+  # performing the rollback; requiring human review to decide whether to ASK
+  # engineering to look is the bureaucratic reading, and it is the reading
+  # that makes a cost-sensitive rule pointless.
+  #
+  # So: no rights -> never automate. Request rights -> the request may be
+  # automated, and `automation_scope` records that it is a request rather than
+  # an execution. Approval rights -> the action itself may be automated.
+  require_persona_any_rights: true
+  # Below this band the system abstains rather than deferring: there is
+  # nothing for a reviewer to review.
+  abstain_at_or_below: INSUFFICIENT

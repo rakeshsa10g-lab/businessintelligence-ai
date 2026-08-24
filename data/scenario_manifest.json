@@ -1,0 +1,118 @@
+{
+  "seed": 20260821,
+  "scenarios": [
+    {
+      "scenario_id": "S1",
+      "title": "High-confidence multi-factor movement",
+      "event_ids": [
+        "E1"
+      ],
+      "persona": "meera",
+      "original_spec_persona": "priya",
+      "divergence_reason": "fixed persona across S1..S4 so the event is the only variable; the persona contrast moved to S1/S5a/S5b on one event",
+      "expected_outcome": "Ranked hypothesis with gateway deploy + payment tickets as corroboration",
+      "requirement_ids": [
+        "R2-MPE-4",
+        "R2-MPE-8"
+      ]
+    },
+    {
+      "scenario_id": "S2",
+      "title": "Conflicting evidence",
+      "event_ids": [
+        "E2"
+      ],
+      "persona": "meera",
+      "original_spec_persona": "arjun",
+      "divergence_reason": "fixed persona across S1..S4 so the event is the only variable",
+      "expected_outcome": "Two hypotheses within the ambiguity margin, both shown",
+      "requirement_ids": [
+        "R2-MPE-4",
+        "R2-CX-6"
+      ]
+    },
+    {
+      "scenario_id": "S3",
+      "title": "Low confidence / thin evidence",
+      "event_ids": [
+        "E3"
+      ],
+      "persona": "meera",
+      "original_spec_persona": "priya",
+      "divergence_reason": "fixed persona across S1..S4 so the event is the only variable",
+      "expected_outcome": "System declines to assert a cause and names what would settle it",
+      "requirement_ids": [
+        "R2-MPE-5"
+      ]
+    },
+    {
+      "scenario_id": "S4",
+      "title": "Sparse history",
+      "event_ids": [
+        "E4"
+      ],
+      "persona": "meera",
+      "original_spec_persona": "arjun",
+      "divergence_reason": "fixed persona across S1..S4 so the event is the only variable",
+      "expected_outcome": "Sparse path used; standard detector suppressed; levers restricted",
+      "requirement_ids": [
+        "R2-MPE-6"
+      ]
+    },
+    {
+      "scenario_id": "S5a",
+      "title": "Two personas, one event - operations lead",
+      "event_ids": [
+        "E1",
+        "E6"
+      ],
+      "persona": "priya",
+      "original_spec_id": "S5",
+      "divergence_reason": "S5 named two personas in one row, so the two runs it implies had no separate identity in any result table; split so each can be cited",
+      "expected_outcome": "Same movement, different narrative, actions and owners",
+      "requirement_ids": [
+        "R2-MPE-3"
+      ]
+    },
+    {
+      "scenario_id": "S5b",
+      "title": "Two personas, one event - finance director",
+      "event_ids": [
+        "E1",
+        "E6"
+      ],
+      "persona": "arjun",
+      "original_spec_id": "S5",
+      "divergence_reason": "the finance director half of the original S5 row; a larger decision value, so the deferral arithmetic differs on identical evidence",
+      "expected_outcome": "Same movement, different narrative, actions and owners",
+      "requirement_ids": [
+        "R2-MPE-3"
+      ]
+    },
+    {
+      "scenario_id": "S6",
+      "title": "Entitlement restriction",
+      "event_ids": [
+        "E6"
+      ],
+      "persona": "priya",
+      "expected_outcome": "CRM evidence withheld with an explicit count and reason",
+      "requirement_ids": [
+        "R2-MPE-7",
+        "R2-CX-8"
+      ]
+    },
+    {
+      "scenario_id": "S7",
+      "title": "Schema change masquerading as a business event",
+      "event_ids": [
+        "E5"
+      ],
+      "persona": "meera",
+      "expected_outcome": "Identified as a data artifact, not a business movement",
+      "requirement_ids": [
+        "R2-CX-3"
+      ]
+    }
+  ]
+}

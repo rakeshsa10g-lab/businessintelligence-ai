@@ -1,0 +1,276 @@
+# The business-lever catalogue (Architecture Part 14.2).
+#
+# A closed set. The future LLM may phrase one of these actions; it cannot
+# author a new one. `lever_id` is the contract — a recommendation naming an id
+# not in this file is dropped and logged (Part 6.2, Rule 7).
+#
+# This is why the catalogue is NOT embedded (Part 3.3): semantic retrieval over
+# levers would let a model reach a lever that does not apply, which is the
+# precise failure the eligibility rules exist to prevent. Lookup is an exact
+# match on driver, cause bucket and trigger conditions.
+#
+# Stage 6 uses this to compute WHICH levers are eligible. Stage 9 adds the
+# fields that turn an eligible lever into a bounded recommendation:
+# `action_template` (the one slot an LLM may fill), `eligible_personas`,
+# `expected_impact` (a named formula, never a generated number) and
+# `allowed_confidence_context` (which reliability bands permit this action).
+#
+# `allowed_confidence_context` is the field that stops the system
+# recommending a disruptive action off a weak reading. A rollback needs a
+# HIGH band; watching and waiting needs nothing.
+version: "2.0.0"
+
+levers:
+  - lever_id: L_GATEWAY_ESCALATE
+    name: Escalate payment gateway to Engineering
+    driver_id: conversion_rate
+    action_template: >
+      Escalate the {component} failure to {owner_role} for rollback
+      assessment, and request {service} error-rate logs covering {window}.
+    eligible_personas: [ops_lead, analytics_lead, finance_director]
+    expected_impact:
+      formula: recover_to_baseline
+      # The recoverable amount is the movement detection already measured.
+      # Nothing is estimated here; the number is read, not produced.
+      basis: "abs_effect measured by detection over the event window"
+      recovery_fraction: 0.90
+      recovery_fraction_low: 0.70
+      unit: INR
+    allowed_confidence_context: [HIGH, MEDIUM]
+    applies_to_buckets: [internal_product]
+    applies_to_drivers: [conversion_rate, orders]
+    trigger_conditions:
+      requires_evidence_types: [deploy_changelog, support_ticket]
+      min_evidence_strength: 0.35
+      requires_stable_baseline: false
+      requires_causal_language: false
+    owner_role: engineering_lead
+    decision_rights:
+      can_approve: [engineering_lead, cto]
+      can_request: [ops_lead, analytics_lead, finance_director]
+      notify: [ops_lead]
+    impact_model: recover_to_baseline
+    monitoring:
+      metric: conversion_rate
+      check_after_days: 2
+      success_threshold: "recovers to >= 90% of pre-event baseline"
+    constraints: ["Rollback window closes 14 days after deploy"]
+
+  - lever_id: L_CHECKOUT_ROLLBACK
+    name: Roll back the checkout release
+    driver_id: conversion_rate
+    action_template: >
+      Roll back the {component} release deployed on {deploy_date}, then confirm
+      {monitoring_metric} recovers within {check_after_days} day(s).
+    eligible_personas: [ops_lead, analytics_lead]
+    expected_impact:
+      formula: recover_to_baseline
+      basis: "abs_effect measured by detection over the event window"
+      recovery_fraction: 0.95
+      recovery_fraction_low: 0.75
+      unit: INR
+    # A rollback is disruptive and hard to reverse. It is not offered off a
+    # medium reading, whatever the evidence strength says.
+    allowed_confidence_context: [HIGH]
+    applies_to_buckets: [internal_product]
+    applies_to_drivers: [conversion_rate]
+    trigger_conditions:
+      requires_evidence_types: [deploy_changelog]
+      min_evidence_strength: 0.50
+      requires_stable_baseline: false
+      # A rollback is disruptive and hard to reverse, so it may only be
+      # recommended when the counterfactual actually licensed a causal claim.
+      requires_causal_language: true
+    owner_role: engineering_lead
+    decision_rights:
+      can_approve: [engineering_lead, cto]
+      can_request: [ops_lead, analytics_lead]
+      notify: [ops_lead, analytics_lead]
+    impact_model: recover_to_baseline
+    monitoring:
+      metric: conversion_rate
+      check_after_days: 1
+      success_threshold: "conversion returns to baseline within 24h"
+    constraints: ["Requires a change-freeze exception outside business hours"]
+
+  - lever_id: L_INVENTORY_EXPEDITE
+    name: Expedite replenishment for affected SKUs
+    driver_id: orders
+    action_template: >
+      Expedite replenishment for the affected SKUs in {slice}, and track
+      {monitoring_metric} against the pre-event band.
+    eligible_personas: [ops_lead, analytics_lead, finance_director]
+    expected_impact:
+      formula: recover_to_baseline
+      basis: "abs_effect measured by detection over the event window"
+      recovery_fraction: 0.70
+      recovery_fraction_low: 0.40
+      unit: INR
+    allowed_confidence_context: [HIGH, MEDIUM]
+    applies_to_buckets: [internal_inventory]
+    applies_to_drivers: [orders, conversion_rate]
+    trigger_conditions:
+      requires_evidence_types: [crm_note, support_ticket]
+      min_evidence_strength: 0.30
+      requires_stable_baseline: false
+      requires_causal_language: false
+    owner_role: supply_chain_lead
+    decision_rights:
+      can_approve: [supply_chain_lead, coo]
+      can_request: [ops_lead, analytics_lead, finance_director]
+      notify: [ops_lead]
+    impact_model: recover_to_baseline
+    monitoring:
+      metric: orders
+      check_after_days: 7
+      success_threshold: "order volume recovers to >= 90% of baseline"
+    constraints: ["Lead time on core SKUs is 5-9 days"]
+
+  - lever_id: L_PROMO_RESPONSE
+    name: Launch a targeted promotional response
+    driver_id: orders
+    action_template: >
+      Launch a targeted promotional response in {slice} within the margin floor
+      set by Finance, and review {monitoring_metric} after
+      {check_after_days} days.
+    eligible_personas: [ops_lead, analytics_lead, finance_director]
+    expected_impact:
+      # Elasticity is estimated from the fact table, not from the movement, so
+      # the range is deliberately wider and the method is named in the output.
+      formula: elasticity_estimate
+      basis: "historical response of orders to promotional periods in this slice"
+      recovery_fraction: 0.50
+      recovery_fraction_low: 0.20
+      unit: INR
+    allowed_confidence_context: [HIGH, MEDIUM]
+    applies_to_buckets: [external_competitor]
+    applies_to_drivers: [orders, conversion_rate, average_order_value]
+    trigger_conditions:
+      requires_evidence_types: [market_event, crm_note]
+      min_evidence_strength: 0.35
+      requires_stable_baseline: true
+      requires_causal_language: false
+    owner_role: marketing_lead
+    decision_rights:
+      can_approve: [marketing_lead, finance_director]
+      can_request: [ops_lead, analytics_lead]
+      notify: [finance_director]
+    impact_model: elasticity_estimate
+    monitoring:
+      metric: orders
+      check_after_days: 14
+      success_threshold: "order share recovers against the category"
+    constraints: ["Margin floor set by Finance"]
+
+  - lever_id: L_PRICING_REVIEW
+    name: Review pricing against the competitive set
+    driver_id: average_order_value
+    action_template: >
+      Review pricing for {slice} against the competitive set, with seven days'
+      notice to partners.
+    eligible_personas: [analytics_lead, finance_director]
+    expected_impact:
+      formula: elasticity_estimate
+      basis: "historical response of AOV to price changes in this slice"
+      recovery_fraction: 0.40
+      recovery_fraction_low: 0.15
+      unit: INR
+    allowed_confidence_context: [HIGH]
+    applies_to_buckets: [external_competitor, internal_pricing]
+    applies_to_drivers: [average_order_value, orders]
+    trigger_conditions:
+      requires_evidence_types: [market_event]
+      min_evidence_strength: 0.35
+      # Blocks Scenario 4: a pricing change must not be recommended off 23
+      # days of history.
+      requires_stable_baseline: true
+      min_history_days: 90
+      requires_causal_language: false
+    owner_role: pricing_manager
+    decision_rights:
+      can_approve: [pricing_manager, finance_director]
+      can_request: [analytics_lead]
+      notify: [finance_director]
+    impact_model: elasticity_estimate
+    monitoring:
+      metric: average_order_value
+      check_after_days: 14
+      success_threshold: "AOV stabilises within 2% of plan"
+    constraints: ["Price changes need 7 days' notice to partners"]
+
+  - lever_id: L_DATA_QUALITY_FIX
+    name: Correct the upstream data definition
+    driver_id: net_revenue
+    action_template: >
+      Correct the {table_name}.{column_name} definition and backfill the
+      affected window; no commercial action is warranted.
+    eligible_personas: [ops_lead, analytics_lead, finance_director]
+    expected_impact:
+      # A reporting artefact moved no money. Reporting a recoverable amount
+      # here would be the exact error the schema-change scenario exists to
+      # catch: treating a definition change as a business event.
+      formula: no_business_impact
+      basis: "a data-definition change; the underlying series did not move"
+      recovery_fraction: 0.0
+      recovery_fraction_low: 0.0
+      unit: INR
+    allowed_confidence_context: [HIGH, MEDIUM, LOW, UNCALIBRATED]
+    applies_to_buckets: [internal_data_schema]
+    applies_to_drivers: [net_revenue, conversion_rate, orders]
+    trigger_conditions:
+      requires_evidence_types: [schema_change]
+      min_evidence_strength: 0.20
+      requires_stable_baseline: false
+      requires_causal_language: false
+    owner_role: data_platform_lead
+    decision_rights:
+      can_approve: [data_platform_lead, analytics_lead]
+      can_request: [ops_lead, finance_director]
+      notify: [analytics_lead]
+    impact_model: no_business_impact
+    monitoring:
+      metric: net_revenue
+      check_after_days: 1
+      success_threshold: "series is continuous across the change date"
+    constraints:
+      - "This is a reporting artefact, not a business movement: no commercial
+         action should be taken on it"
+
+  - lever_id: L_MONITOR_ONLY
+    name: Monitor, take no action yet
+    driver_id: null
+    action_template: >
+      Take no action yet. Watch {monitoring_metric} for
+      {check_after_days} days and re-assess.
+    eligible_personas: [ops_lead, analytics_lead, finance_director]
+    expected_impact:
+      formula: none
+      basis: "no action taken, so no impact is claimed"
+      recovery_fraction: 0.0
+      recovery_fraction_low: 0.0
+      unit: INR
+    # Available at every confidence level including none: the system must
+    # always be able to recommend waiting.
+    allowed_confidence_context: [HIGH, MEDIUM, LOW, UNCALIBRATED, INSUFFICIENT]
+    # The lever that exists so the system can recommend doing nothing. Without
+    # it, a bundle with weak evidence has no eligible lever at all, and an
+    # empty recommendation list reads as a failure rather than as the correct
+    # answer. Deliberately has no bucket or driver restriction.
+    applies_to_buckets: []
+    applies_to_drivers: []
+    trigger_conditions:
+      requires_evidence_types: []
+      min_evidence_strength: 0.0
+      requires_stable_baseline: false
+      requires_causal_language: false
+    owner_role: analytics_lead
+    decision_rights:
+      can_approve: [analytics_lead, ops_lead, finance_director]
+      can_request: [ops_lead, analytics_lead, finance_director]
+      notify: []
+    impact_model: none
+    monitoring:
+      metric: net_revenue
+      check_after_days: 7
+      success_threshold: "movement resolves without intervention"
+    constraints: []

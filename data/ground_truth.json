@@ -1,0 +1,186 @@
+{
+  "seed": 20260821,
+  "generated_for_window": {
+    "start": "2025-03-01",
+    "end": "2026-08-17"
+  },
+  "events": [
+    {
+      "event_id": "E1",
+      "name": "Payment gateway degradation",
+      "start": "2026-07-12",
+      "end": "2026-07-26",
+      "slice": {
+        "region": [
+          "West"
+        ],
+        "channel": [
+          "Web",
+          "Mobile App"
+        ]
+      },
+      "true_driver": "conversion_rate",
+      "true_dimension": "region",
+      "true_slice_label": "West",
+      "mechanism": "payment_gateway_degradation",
+      "scenario": "S1_high_confidence_multifactor",
+      "detectable_by_standard_path": true,
+      "evidence_planted": {
+        "support_tickets": 34,
+        "deploy_changelog": 1
+      },
+      "decoys_planted": {
+        "market_events": 1
+      },
+      "note": "",
+      "measured": {
+        "baseline_daily_net_revenue_inr": 211203.67,
+        "event_daily_net_revenue_inr": 158453.24,
+        "relative_change_pct": -24.98
+      }
+    },
+    {
+      "event_id": "E2",
+      "name": "Ambiguous: competitor promo vs stockout",
+      "start": "2026-06-02",
+      "end": "2026-06-16",
+      "slice": {
+        "region": [
+          "South"
+        ],
+        "product_category": [
+          "Apparel"
+        ]
+      },
+      "true_driver": "orders",
+      "true_dimension": "product_category",
+      "true_slice_label": "Apparel",
+      "mechanism": "ambiguous_competitor_promo_or_stockout",
+      "scenario": "S2_conflicting_evidence",
+      "detectable_by_standard_path": true,
+      "evidence_planted": {
+        "market_events": 6,
+        "crm_notes": 11
+      },
+      "decoys_planted": {},
+      "note": "Evidence deliberately balanced so no single hypothesis dominates.",
+      "measured": {
+        "baseline_daily_net_revenue_inr": 57175.58,
+        "event_daily_net_revenue_inr": 44649.36,
+        "relative_change_pct": -21.91
+      }
+    },
+    {
+      "event_id": "E3",
+      "name": "Unexplained softness, thin evidence",
+      "start": "2026-08-05",
+      "end": "2026-08-15",
+      "slice": {
+        "region": [
+          "East"
+        ],
+        "segment": [
+          "SMB"
+        ]
+      },
+      "true_driver": "orders",
+      "true_dimension": "region",
+      "true_slice_label": "East",
+      "mechanism": "unknown",
+      "scenario": "S3_low_confidence_abstention",
+      "detectable_by_standard_path": true,
+      "evidence_planted": {
+        "support_tickets": 2
+      },
+      "decoys_planted": {},
+      "note": "Only two vague tickets exist -> engine should abstain, not guess.",
+      "measured": {
+        "baseline_daily_net_revenue_inr": 69452.32,
+        "event_daily_net_revenue_inr": 57345.08,
+        "relative_change_pct": -17.43
+      }
+    },
+    {
+      "event_id": "E4",
+      "name": "NewLaunch category, sparse history",
+      "start": "2026-07-20",
+      "end": "2026-07-31",
+      "slice": {
+        "product_category": [
+          "NewLaunch"
+        ]
+      },
+      "true_driver": "orders",
+      "true_dimension": "product_category",
+      "true_slice_label": "NewLaunch",
+      "mechanism": "new_product_ramp",
+      "scenario": "S4_sparse_history",
+      "detectable_by_standard_path": false,
+      "evidence_planted": {
+        "crm_notes": 4
+      },
+      "decoys_planted": {},
+      "note": "23 days of history at event start (launched 2026-06-27) is below min_history_days=56 -> sparse path, not the standard detector.",
+      "measured": {
+        "baseline_daily_net_revenue_inr": 28793.79,
+        "event_daily_net_revenue_inr": 89531.39,
+        "relative_change_pct": 210.94
+      }
+    },
+    {
+      "event_id": "E5",
+      "name": "Schema change masquerading as a business event",
+      "start": "2026-06-14",
+      "end": "2026-06-28",
+      "slice": {
+        "channel": [
+          "Marketplace"
+        ]
+      },
+      "true_driver": "schema_change",
+      "true_dimension": "channel",
+      "true_slice_label": "Marketplace",
+      "mechanism": "channel_value_renamed",
+      "scenario": "S7_schema_change",
+      "detectable_by_standard_path": true,
+      "evidence_planted": {
+        "schema_change_log": 1
+      },
+      "decoys_planted": {
+        "support_tickets": 12
+      },
+      "note": "No real business movement. Correct answer is 'this is a data artifact'."
+    },
+    {
+      "event_id": "E6",
+      "name": "One event, two personas",
+      "start": "2026-07-12",
+      "end": "2026-07-26",
+      "slice": {
+        "region": [
+          "West"
+        ],
+        "channel": [
+          "Web",
+          "Mobile App"
+        ]
+      },
+      "true_driver": "conversion_rate",
+      "true_dimension": "region",
+      "true_slice_label": "West",
+      "mechanism": "payment_gateway_degradation",
+      "scenario": "S5_two_personas_and_S6_entitlement",
+      "detectable_by_standard_path": true,
+      "evidence_planted": {
+        "crm_notes": 5
+      },
+      "decoys_planted": {},
+      "note": "Same underlying movement as E1. The CRM notes here are visible to finance_director but denied to ops_lead, so the two personas genuinely see different evidence.",
+      "measured": {
+        "baseline_daily_net_revenue_inr": 211203.67,
+        "event_daily_net_revenue_inr": 158453.24,
+        "relative_change_pct": -24.98
+      }
+    }
+  ]
+}

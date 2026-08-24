@@ -1,0 +1,64 @@
+# BusinessIntelligence.ai — Round 2 prototype
+#
+# Everything needed to run the app and the full test suite:
+#
+#     pip install -r requirements.txt
+#     python -m data.generate           # builds data/warehouse.duckdb
+#     python -m retrieval.build_index   # builds data/embedding_index/
+#     streamlit run app.py
+#
+# Stage 12 audit note: stages 3-5 and 8 were listed here but left COMMENTED
+# OUT while those stages were built, and never uncommented once they landed.
+# The imports were live — STL, PELT, the embedding model and the Anthropic
+# client are all on the runtime path — so a clean `pip install -r` produced a
+# repository that could not start. Fixed, so the install-then-run path in
+# docs/DEPLOYMENT.md is actually the path.
+
+# --- core ---
+duckdb==1.5.5
+pydantic==2.13.4
+PyYAML==6.0.3
+numpy>=2.0
+pandas>=2.2
+
+# --- test ---
+pytest==9.1.1
+
+# --- detection + attribution (stages 3-4) ---
+statsmodels>=0.14        # STL decomposition
+ruptures>=1.1            # PELT changepoint detection
+scipy>=1.13              # Welch t-test, bootstrap significance
+
+# --- evidence retrieval (stage 5) ---
+# sentence-transformers pulls torch; it is the largest install here and the
+# reason a cold first run takes minutes rather than seconds.
+sentence-transformers>=3.0
+rank-bm25>=0.2
+
+# --- LLM narration (stage 8) ---
+# Optional at RUNTIME: with no ANTHROPIC_API_KEY the graph routes to the
+# verified deterministic template and the app stays fully functional. The
+# package is still required, because llm/client.py imports it at module load.
+anthropic>=0.40
+
+# --- orchestration (stage 10) ---
+langgraph>=1.2,<2
+langgraph-checkpoint-sqlite>=3.1,<4
+#
+# NOTE: langchain-core arrives TRANSITIVELY under langgraph. That is accepted.
+# A direct `langchain` dependency is prohibited — see ADR-001 and CLAUDE.md rule 2.
+# `tests/test_graph_routing.py` asserts no `import langchain` exists in graph/.
+#
+# Pinned below 2.x deliberately: LangGraph 1.2 already warns that unregistered
+# types "will be blocked in a future version" (ADR-031), and that change would
+# land in a major. Resume is the thing it breaks, so the bound is not cosmetic.
+
+# --- UI (stage 11) ---
+streamlit>=1.40
+plotly>=5.24
+
+# --- optional: one-off diagnostics ---
+# `eval/diagnostic_west.py` plots an STL decomposition to a PNG. Nothing in
+# the app or the test suite imports it, so it is deliberately NOT a required
+# dependency — install it only if you want to regenerate that figure.
+#   pip install matplotlib>=3.8

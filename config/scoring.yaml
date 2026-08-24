@@ -1,0 +1,120 @@
+# Hypothesis scoring weights (Architecture Part 10.5, corrected — see ADR-022).
+#
+# Versioned deliberately. The feedback loop (Part 15) is the only thing
+# permitted to change these numbers, and only once there are >= 30 labelled
+# cases. Until then they are hand-set and we say so: claiming a learned
+# weighting off four labelled examples is exactly what a sharp judge catches.
+#
+# Every number a score depends on lives here rather than in Python, so a
+# reviewer can change a weight, re-run, and watch the ranking move without
+# reading the implementation.
+#
+# ---------------------------------------------------------------------------
+# WHY THE SHAPE CHANGED IN v3.0.0
+#
+# Part 10.5 gives a single weighted sum over contribution, surprise,
+# significance, evidence strength, temporal precedence and the counterfactual.
+# That works when the competing hypotheses are different DRIVERS or SLICES,
+# because then contribution genuinely differs between them.
+#
+# Our hypotheses are competing CAUSE BUCKETS for one driver and one slice —
+# "was the West conversion drop a platform failure, a stockout, or competitive
+# pressure?" — and for those, contribution, robustness, the counterfactual,
+# temporal precedence and surprise are all properties of the MOVEMENT. Every
+# hypothesis about that movement inherits them identically.
+#
+# Measured on Scenario 1: five of the six components had a spread of exactly
+# 0.000 across three hypotheses. Eighty per cent of the weight was a constant
+# added to everything, compressing the scores into [0.863, 0.966] and making a
+# textbook high-confidence case come out CONFLICTED.
+#
+# So the two questions are separated and multiplied:
+#
+#   score = movement_confidence x evidence_fit x contradiction_multiplier
+#
+#   movement_confidence  is this movement real, material and localised?
+#                        Identical for every hypothesis; reported once on the
+#                        bundle.
+#   evidence_fit         how well does THIS explanation fit the evidence?
+#                        The part that discriminates.
+#
+# A product rather than a sum because both must hold: a well-established
+# movement with nothing corroborating a particular cause should score low, and
+# so should a well-corroborated cause for a movement that was never
+# established. A sum lets either one carry the other.
+# ---------------------------------------------------------------------------
+version: "3.0.0"
+
+# --------------------------------------------------------------------------
+# movement confidence — a property of the movement, not of any explanation
+# --------------------------------------------------------------------------
+movement_confidence:
+  contribution: 0.30          # share of the movement this driver explains
+  statistical_strength: 0.15  # surprise of the winning slice
+  robustness: 0.25            # bootstrap stability of the driver ranking
+  temporal_precedence: 0.10   # a dated cause precedes the changepoint
+  counterfactual: 0.20        # DiD showed the movement is slice-specific
+
+# --------------------------------------------------------------------------
+# evidence fit — the part that separates competing explanations
+# --------------------------------------------------------------------------
+evidence_fit:
+  bucket_alignment: 0.30      # are the source types this cause REQUIRES present?
+  # Diversity outweighs volume, deliberately. Eight tickets from one queue
+  # about one incident are one finding retold; three documents from three
+  # independent systems are three findings that agree. Weighting volume higher
+  # (as Part 10.5 does) rewards the loudest incident rather than the
+  # best-corroborated explanation, and the duplicate caps alone do not fix
+  # that: they stop the same document counting twice, not the same SOURCE
+  # counting eight times.
+  source_diversity: 0.25      # how many distinct source types corroborate
+  distinct_documents: 0.20    # unique documents, after duplicate collapsing
+  cohort_signal: 0.15         # a rate change against the slice's own baseline
+  temporal_tightness: 0.10    # evidence clustered near the changepoint
+
+  # Caps. `distinct_documents` saturates so volume cannot substitute for
+  # diversity: 34 tickets about one incident are one finding, and the cohort
+  # roll-up already carries the volume.
+  max_distinct_documents: 8
+  max_source_types: 3
+  tightness_window_days: 7
+
+# --------------------------------------------------------------------------
+# contradiction
+# --------------------------------------------------------------------------
+# Applied as a multiplier rather than a subtraction. Subtracting would let a
+# hypothesis with a large enough evidence base absorb any quantity of
+# disconfirming evidence and still rank first. Floored, so a contradicted
+# hypothesis is demoted and still shown — the reader needs to see the thing
+# that was argued against.
+contradiction:
+  penalty_per_signal: 0.15
+  max_penalty: 0.60
+
+# --------------------------------------------------------------------------
+# separation: when is a winner actually a winner?
+# --------------------------------------------------------------------------
+separation:
+  # Top two within this margin -> CONFLICTED, and both are reported. The
+  # architecture requires 2-3 ranked hypotheses in ambiguous cases precisely so
+  # the system cannot manufacture a single winner it cannot justify.
+  #
+  # Margin alone, on a bounded [0,1] score. An earlier version also required a
+  # dominance RATIO and combined the two with OR, which meant the stricter test
+  # always bound: on Scenario 1 a margin of 0.176 — a clear separation — was
+  # overruled because the ratio came to 1.24 against a 1.25 threshold. Two
+  # redundant measures of the same quantity joined by OR is not a stricter
+  # check, it is an arbitrary one.
+  ambiguous_margin: 0.10
+  # Kept only as a guard where both scores are small, since there a modest
+  # absolute margin can still be a large relative difference.
+  dominance_ratio: 1.25
+  low_score_band: 0.30        # below this, apply the ratio guard as well
+  min_score_to_report: 0.15
+  min_score_for_supported: 0.35
+  min_distinct_documents_for_supported: 2
+  max_hypotheses: 3
+  min_hypotheses_when_conflicted: 2
+  # Below this the movement itself is too weakly established to explain,
+  # whatever the evidence says.
+  min_movement_confidence: 0.30

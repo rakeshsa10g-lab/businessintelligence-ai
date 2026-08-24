@@ -1,0 +1,76 @@
+id: refund_rate
+version: "1.0.0"
+name: Refund Rate
+definition: >
+  Finance-recognised refund amount divided by gross order value, at weekly
+  grain. The numerator comes from the finance system (S3) and the denominator
+  from the warehouse (S1), so every read of this KPI is a genuine cross-source
+  reconciliation at week x region x product_category.
+unit: ratio
+additive: false
+attribute_via: [net_revenue]
+
+formula:
+  base_table: finance_adjustments
+  date_column: week_start
+  numerator_expression: "SUM(refund_amount)"
+  denominator_expression: "SUM(gross_amount)"
+  denominator_table: fact_orders
+  denominator_date_column: order_date
+  denominator_filters:
+    - "order_status IN ('shipped','delivered')"
+    - "is_test_account = FALSE"
+  filters: []
+
+grain: [week, region, product_category]
+grain_note: >
+  Weekly, not daily, and lagging. The most recent week genuinely does not
+  exist yet — see freshness.expected_lag_hours.
+column_map:
+  week: week_start
+  region: region
+  product_category: product_category
+
+dimensions:
+  - {name: region,           cardinality: 4, hierarchy_level: 1}
+  - {name: product_category, cardinality: 5, hierarchy_level: 2}
+
+optional_columns:
+  refund_reason_detail: "ANY_VALUE(reason_code)"
+
+detection:
+  seasonality_period: 4
+  method: stl_robust_z_pelt
+  z_threshold: 2.5
+  pelt_penalty: 1.0            # dimensionless BIC multiplier: pen = beta * sigma^2 * log(n)
+  min_history_days: 84
+
+materiality:
+  min_abs_effect: 0.01
+  min_abs_effect_unit: pp
+  min_rel_effect_pct: 8.0
+  min_duration_days: 14
+  rule: "(abs_effect >= min_abs_effect OR rel_effect >= min_rel_effect_pct) AND duration >= min_duration_days"
+
+freshness:
+  cadence: weekly
+  expected_lag_hours: 72          # T+3 by design
+  stale_after_hours: 240
+
+lineage:
+  source_id: S3
+  source_table: finance_adjustments
+  upstream: [s3.finance_ledger, s1.fact_orders]
+  owner: "finance-systems@company.example"
+
+security:
+  classification: confidential
+  row_filter_by_role:
+    ops_lead: "region = :user_region"
+    finance_director: "TRUE"
+    analytics_lead: "TRUE"
+  restricted_columns:
+    refund_reason_detail: [finance_director, analytics_lead]
+
+business_owner: "Finance Director"
+allowed_levers: [L_QUALITY_REVIEW, L_RETURNS_POLICY]

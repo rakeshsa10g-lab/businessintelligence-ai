@@ -1,0 +1,82 @@
+id: net_revenue
+version: "1.2.0"
+name: Net Revenue
+definition: >
+  Gross order value less discounts and returns, for orders with status in
+  (shipped, delivered). Excludes internal test accounts. Recognised on order
+  date, not shipment date.
+unit: INR
+additive: true                    # fundamental measure -> EP is well defined
+
+formula:
+  base_table: fact_orders
+  date_column: order_date
+  expression: "SUM(gross_amount - discount_amount - return_amount)"
+  filters:
+    - "order_status IN ('shipped','delivered')"
+    - "is_test_account = FALSE"
+
+grain: [date, region, segment, product_category, channel]
+column_map:
+  date: order_date
+  region: region
+  segment: segment
+  product_category: product_category
+  channel: channel
+
+dimensions:
+  - {name: region,           cardinality: 4, hierarchy_level: 1}
+  - {name: segment,          cardinality: 3, hierarchy_level: 2}
+  - {name: product_category, cardinality: 5, hierarchy_level: 3}
+  - {name: channel,          cardinality: 4, hierarchy_level: 4}
+
+optional_columns:
+  margin: "SUM(margin)"
+
+drivers:
+  identity: "sessions * conversion_rate * average_order_value * (1 - refund_rate)"
+  children: [orders, conversion_rate, average_order_value, refund_rate]
+
+detection:
+  seasonality_period: 7
+  method: stl_robust_z_pelt
+  z_threshold: 3.0
+  pelt_penalty: 1.0            # dimensionless BIC multiplier: pen = beta * sigma^2 * log(n)
+  min_history_days: 56
+
+materiality:
+  min_abs_effect: 250000.0
+  min_abs_effect_unit: INR
+  # Calibrated against the noise floor, not chosen by intuition. Running the
+  # detector across all 68 slices over an event-free holdout period
+  # (2025-12-01..2026-05-31, before the first injected event) gives a null
+  # distribution of |relative effect| with median 4.6% and p99 9.2%. The
+  # previous value of 2.0% sat below the *median* of pure noise, so the gate
+  # admitted roughly every slice it was shown. 9.0% is the p99 of that null:
+  # about one false alarm per hundred slices scanned.
+  min_rel_effect_pct: 9.0
+  min_duration_days: 3
+  rule: "(abs_effect >= min_abs_effect OR rel_effect >= min_rel_effect_pct) AND duration >= min_duration_days"
+
+freshness:
+  cadence: daily
+  expected_lag_hours: 30
+  stale_after_hours: 48
+
+lineage:
+  source_id: S1
+  source_table: fact_orders
+  upstream: [s1.raw_orders, s1.raw_returns]
+  owner: "data-platform@company.example"
+
+security:
+  classification: internal
+  row_filter_by_role:
+    ops_lead: "region = :user_region"
+    finance_director: "TRUE"
+    analytics_lead: "TRUE"
+  restricted_columns:
+    margin: [finance_director, analytics_lead]
+
+business_owner: "VP Revenue Operations"
+allowed_levers: [L_GATEWAY_ESCALATE, L_PROMO_RESPONSE, L_INVENTORY_EXPEDITE, L_PRICING_REVIEW]

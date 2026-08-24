@@ -1,0 +1,76 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	resolve_intent(resolve_intent)
+	load_contract(load_contract)
+	enforce_entitlements(enforce_entitlements)
+	detect(detect)
+	attribute(attribute)
+	retrieve(retrieve)
+	rank_hypotheses(rank_hypotheses)
+	gate_1(gate_1)
+	narrate(narrate)
+	gate_2(gate_2)
+	retry_narrate(retry_narrate)
+	deterministic_template(deterministic_template)
+	calibrate(calibrate)
+	recommend(recommend)
+	defer(defer)
+	human_review(human_review)
+	deliver(deliver)
+	log_run(log_run)
+	access_denied(access_denied)
+	contract_error(contract_error)
+	no_material_event(no_material_event)
+	abstain_sparse_history(abstain_sparse_history)
+	abstain_data_quality(abstain_data_quality)
+	abstain_insufficient_evidence(abstain_insufficient_evidence)
+	clarify(clarify)
+	abstain_terminal(abstain_terminal)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> resolve_intent;
+	abstain_data_quality --> log_run;
+	abstain_insufficient_evidence --> log_run;
+	abstain_sparse_history --> log_run;
+	abstain_terminal --> log_run;
+	access_denied --> log_run;
+	attribute --> retrieve;
+	calibrate --> recommend;
+	clarify --> log_run;
+	contract_error --> log_run;
+	defer -. &nbsp;abstain&nbsp; .-> abstain_terminal;
+	defer -.-> deliver;
+	defer -. &nbsp;review&nbsp; .-> human_review;
+	deliver --> log_run;
+	detect -. &nbsp;error&nbsp; .-> abstain_data_quality;
+	detect -. &nbsp;sparse&nbsp; .-> abstain_sparse_history;
+	detect -. &nbsp;material&nbsp; .-> attribute;
+	detect -. &nbsp;not_material&nbsp; .-> no_material_event;
+	deterministic_template --> calibrate;
+	enforce_entitlements -. &nbsp;denied&nbsp; .-> access_denied;
+	enforce_entitlements -. &nbsp;error&nbsp; .-> contract_error;
+	enforce_entitlements -. &nbsp;allowed&nbsp; .-> detect;
+	gate_1 -. &nbsp;error&nbsp; .-> abstain_insufficient_evidence;
+	gate_1 -.-> narrate;
+	gate_2 -. &nbsp;pass&nbsp; .-> calibrate;
+	gate_2 -. &nbsp;template&nbsp; .-> deterministic_template;
+	gate_2 -. &nbsp;retry&nbsp; .-> retry_narrate;
+	human_review --> log_run;
+	load_contract -.-> clarify;
+	load_contract -. &nbsp;error&nbsp; .-> contract_error;
+	load_contract -. &nbsp;ok&nbsp; .-> enforce_entitlements;
+	narrate --> gate_2;
+	no_material_event --> log_run;
+	rank_hypotheses --> gate_1;
+	recommend --> defer;
+	resolve_intent --> load_contract;
+	retrieve --> rank_hypotheses;
+	retry_narrate --> gate_2;
+	log_run --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

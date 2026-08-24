@@ -1,0 +1,69 @@
+id: average_order_value
+version: "1.0.0"
+name: Average Order Value
+definition: >
+  Gross order value divided by order count, before discounts and returns.
+  A ratio: explanatory power over it is not well defined, so attribution is
+  routed to the fundamentals instead (CMMD; Adtributor section 4).
+unit: INR
+additive: false                      # ratio -> do NOT run Adtributor directly
+attribute_via: [orders, net_revenue]
+
+formula:
+  base_table: fact_orders
+  date_column: order_date
+  numerator_expression: "SUM(gross_amount)"
+  denominator_expression: "SUM(orders)"
+  filters:
+    - "order_status IN ('shipped','delivered')"
+    - "is_test_account = FALSE"
+
+grain: [date, region, segment, product_category, channel]
+column_map:
+  date: order_date
+  region: region
+  segment: segment
+  product_category: product_category
+  channel: channel
+
+dimensions:
+  - {name: region,           cardinality: 4, hierarchy_level: 1}
+  - {name: segment,          cardinality: 3, hierarchy_level: 2}
+  - {name: product_category, cardinality: 5, hierarchy_level: 3}
+  - {name: channel,          cardinality: 4, hierarchy_level: 4}
+
+detection:
+  seasonality_period: 7
+  method: stl_robust_z_pelt
+  z_threshold: 3.0
+  pelt_penalty: 1.0            # dimensionless BIC multiplier: pen = beta * sigma^2 * log(n)
+  min_history_days: 56
+
+materiality:
+  min_abs_effect: 120.0
+  min_abs_effect_unit: INR
+  min_rel_effect_pct: 3.0
+  min_duration_days: 3
+  rule: "(abs_effect >= min_abs_effect OR rel_effect >= min_rel_effect_pct) AND duration >= min_duration_days"
+
+freshness:
+  cadence: daily
+  expected_lag_hours: 30
+  stale_after_hours: 48
+
+lineage:
+  source_id: S1
+  source_table: fact_orders
+  upstream: [s1.raw_orders]
+  owner: "data-platform@company.example"
+
+security:
+  classification: internal
+  row_filter_by_role:
+    ops_lead: "region = :user_region"
+    finance_director: "TRUE"
+    analytics_lead: "TRUE"
+  restricted_columns: {}
+
+business_owner: "VP Revenue Operations"
+allowed_levers: [L_PRICING_REVIEW]

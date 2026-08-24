@@ -1,0 +1,72 @@
+id: conversion_rate
+version: "1.0.0"
+name: Checkout Conversion Rate
+definition: >
+  Orders divided by sessions, measured in the product analytics stream at
+  hourly grain. Has no product dimension, so attribution on this KPI cannot
+  descend below region x channel — the engine must say so rather than
+  silently pretending otherwise.
+unit: ratio
+additive: false
+attribute_via: [orders]
+
+formula:
+  base_table: fact_sessions
+  date_column: session_hour
+  numerator_expression: "SUM(orders)"
+  denominator_expression: "SUM(sessions)"
+  filters: []
+
+grain: [date, region, channel]
+grain_note: >
+  No product_category and no segment. This is a genuine grain mismatch against
+  net_revenue, not an omission.
+column_map:
+  date: session_hour
+  region: region
+  channel: channel
+
+dimensions:
+  - {name: region,  cardinality: 4, hierarchy_level: 1}
+  - {name: channel, cardinality: 4, hierarchy_level: 2}
+
+quality:
+  known_null_columns: [region]
+  expected_null_rate_pct: 3.5
+  null_reason: "Unknown geo (VPN / opted-out clients)"
+
+detection:
+  seasonality_period: 7
+  method: stl_robust_z_pelt
+  z_threshold: 3.0
+  pelt_penalty: 1.0            # dimensionless BIC multiplier: pen = beta * sigma^2 * log(n)
+  min_history_days: 21
+
+materiality:
+  min_abs_effect: 0.008
+  min_abs_effect_unit: pp
+  min_rel_effect_pct: 5.0
+  min_duration_days: 2
+  rule: "(abs_effect >= min_abs_effect OR rel_effect >= min_rel_effect_pct) AND duration >= min_duration_days"
+
+freshness:
+  cadence: hourly
+  expected_lag_hours: 2
+  stale_after_hours: 6
+
+lineage:
+  source_id: S2
+  source_table: fact_sessions
+  upstream: [s2.raw_events]
+  owner: "product-analytics@company.example"
+
+security:
+  classification: internal
+  row_filter_by_role:
+    ops_lead: "region = :user_region"
+    finance_director: "TRUE"
+    analytics_lead: "TRUE"
+  restricted_columns: {}
+
+business_owner: "Head of Digital Product"
+allowed_levers: [L_GATEWAY_ESCALATE, L_CHECKOUT_ROLLBACK]

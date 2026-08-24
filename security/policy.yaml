@@ -1,0 +1,49 @@
+# Policy as configuration (Architecture Part 21.2).
+#
+# The identity is simulated. Swapping a simulated principal for an OIDC claim
+# is a change at one chokepoint, which is the whole point of having exactly
+# one chokepoint. We built the enforcement model, not the identity
+# infrastructure, and say so.
+version: "1.0.0"
+
+roles:
+  ops_lead:
+    description: Regional operations lead. Sees only their own region.
+    row_filters:
+      net_revenue: "region = :user_region"
+      orders: "region = :user_region"
+      average_order_value: "region = :user_region"
+      conversion_rate: "region = :user_region"
+      refund_rate: "region = :user_region"
+    denied_columns: [margin, refund_reason_detail, customer_email]
+    allowed_sources: [S1, S2, support_tickets, deploy_changelog, market_events, schema_change_log]
+    denied_sources: [crm_notes, S3]
+    max_grain: [date, region, segment, product_category, channel]
+    extra_capabilities: []
+
+  finance_director:
+    description: Finance director. All regions, all columns except raw PII.
+    row_filters: {}
+    denied_columns: [customer_email]
+    allowed_sources: [S1, S2, S3, support_tickets, crm_notes, market_events, deploy_changelog, schema_change_log]
+    denied_sources: []
+    max_grain: [date, region, segment, product_category, channel]
+    extra_capabilities: []
+
+  analytics_lead:
+    description: Analytics lead and escalation target. Everything, plus diagnostics.
+    row_filters: {}
+    denied_columns: [customer_email]
+    allowed_sources: ["*"]
+    denied_sources: []
+    max_grain: [date, region, segment, product_category, channel]
+    extra_capabilities: [view_method_panel, view_raw_prompts, override_verdict]
+
+# Fields that are sensitive regardless of role.
+sensitive_fields:
+  customer_email:
+    action: hash
+    salt_env: PII_SALT
+  account_name:
+    action: redact_in_narrative
+    keep_in_table: true

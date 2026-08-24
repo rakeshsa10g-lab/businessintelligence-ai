@@ -1,0 +1,69 @@
+# Confidence derivation (Architecture Part 13.4).
+#
+# Confidence is computed here, from analytical state, and is NEVER produced by
+# the model. The narrator's output schema has no such field, so there is no
+# slot to hallucinate one into (ADR-025).
+#
+# ---------------------------------------------------------------------------
+# ONE DEVIATION FROM PART 13.4, AND WHY
+#
+# The architecture's formula weights `(1 - p_value)` at 0.20. That p-value is
+# the Welch test on the PELT-selected event window, and ADR-017 established
+# that the window is chosen to maximise displacement — so the statistic is a
+# post-selection one and reads p < 0.001 on pure noise. Weighting it at 0.20
+# would put a fifth of the confidence score on a number that is high whether or
+# not anything happened.
+#
+# Bootstrap robustness replaces it. It answers the question the p-value was
+# meant to answer — is this finding an artefact of which days fell in the
+# window — and unlike the p-value it is not computed on the window that was
+# selected for being extreme. The Welch value is still carried on the
+# hypothesis as diagnostic metadata; it scores nothing.
+# ---------------------------------------------------------------------------
+version: "1.0.0"
+
+# Six components, each normalised to [0, 1]. Weights sum to 1.0 and the loader
+# refuses a configuration where they do not: a weighted mean whose weights do
+# not sum to one produces scores that cannot be compared across versions.
+weights:
+  contribution: 0.25          # share of the movement the driver explains
+  robustness: 0.20            # bootstrap stability (replaces 1 - p_value)
+  evidence_strength: 0.20     # corroboration from retrieval
+  counterfactual: 0.15        # DiD showed the movement is slice-specific
+  data_quality: 0.15          # freshness, imputation, schema stitching
+  temporal_precedence: 0.05   # a dated cause precedes the changepoint
+
+# Contradiction scales the score down after the weighted sum, for the same
+# reason it does in hypothesis scoring: subtraction lets a strong contribution
+# absorb any amount of disconfirming evidence.
+contradiction:
+  penalty_per_signal: 0.10
+  max_penalty: 0.50
+
+# Data-quality deductions. Each is a measurable property of the bundle, not a
+# judgement.
+data_quality:
+  base: 1.00
+  penalty_imputed: 0.15         # a window with imputed days
+  penalty_sparse: 0.50          # sparse history
+  penalty_stale: 0.25           # a source past its staleness SLA
+  penalty_schema_change: 0.10   # a stitched schema change in the window
+
+# Band thresholds (Part 13.4). Bands, not a bare number: a 184-participant
+# study found calibrated confidence lifted decision accuracy ~20% while a
+# context-free score gave ~2% and increased automation bias.
+bands:
+  HIGH: 0.75          # >= this
+  MEDIUM: 0.50
+  LOW: 0.25
+  # below LOW -> INSUFFICIENT, and the system abstains
+
+# A band is only reportable with a reliability figure behind it. Below this
+# many observed cases the band is reported as UNCALIBRATED rather than given a
+# fabricated accuracy.
+calibration:
+  min_cases_per_band: 10
+  coverage_note: >
+    Calibration counts are seeded from the synthetic ground-truth evaluation
+    over the generated dataset. They are NOT production history and must be
+    labelled as synthetic wherever they are displayed.
