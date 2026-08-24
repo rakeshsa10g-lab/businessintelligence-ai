@@ -194,3 +194,67 @@ false.
 Nothing is marked REAL that a judge could disprove in one question, and
 nothing is marked DEFERRED without a trigger that says when it would stop
 being acceptable.
+
+---
+
+# Stage 13 final re-assessment
+
+Re-checked at submission readiness. **No category was upgraded for having
+documentation** — the two changes below both reflect work done, and one
+category was re-examined and deliberately *not* upgraded.
+
+## Changes from the Stage 12 assessment
+
+| # | Area | Was | Now | Why |
+|---|---|:---:|:---:|---|
+| 5 | Databases / Storage | REAL | **REAL** | Unchanged, but re-verified after a full data regeneration: ground truth byte-identical, detection unchanged, all 8 scenario decisions unchanged |
+| 13 | Testing | REAL | **REAL** | Strengthened: the suite *caught two real defects* introduced by the Stage 13 data change — a template citing evidence the bundle did not hold, and a brittle literal-count assertion |
+
+## Re-examined and deliberately NOT upgraded
+
+**8 — CI/CD: stays LIGHTWEIGHT.** The workflow is written, valid YAML, and
+covers install → generate → build index → test → secret scan. It has **never
+executed**, because the repository has no remote. A CI file that has not run is
+a plan, not a control, and upgrading it on the strength of its own existence is
+exactly what this matrix is supposed to prevent.
+
+**12 — Monitoring: stays LIGHTWEIGHT.** Telemetry is captured per run and
+rendered in the Audit tab; nothing aggregates, retains or alerts. Writing
+`eval/final_telemetry_report.md` did not change what the system does.
+
+**6 — Auth: stays PARTIAL.** Authorisation is real, tested through a six-stage
+chain, and now correctly audited per run. Authentication does not exist —
+persona is a dropdown. No amount of documentation moves this.
+
+## What Stage 13 actually changed in the product
+
+| Change | Category affected | Effect |
+|---|---|---|
+| Widened the document corpus (13 → 30 distinct texts) | Testing, Storage | Retrieval metrics fell and became honest; **dense retrieval is now justified by measurement**, not just by argument |
+| Fixed `build_deterministic_narrative` citing ids the bundle had dropped | Error handling | The fallback path is now genuinely unfailable rather than unfailable by luck |
+| Template node now reports its own Gate 2 failure | Error tracking | A blocked template would previously have been delivered silently |
+| Corrected the PII claim in the security audit | Security | An overstatement in our own audit, found by inspecting the schema |
+
+## Final matrix
+
+| # | Area | Verdict |
+|---|---|:---:|
+| 1 | System Design | **REAL** |
+| 2 | System Architecture | **REAL** |
+| 3 | Frontend | **REAL** |
+| 4 | APIs / Backend Logic | **REAL** |
+| 5 | Databases / Storage | **REAL** |
+| 6 | Auth / Permissions | **PARTIAL** — authorisation real, authentication absent |
+| 7 | Hosting / Cloud | **LIGHTWEIGHT** |
+| 8 | CI/CD / Version Control | **LIGHTWEIGHT** — workflow present, never executed |
+| 9 | Security | **REAL** |
+| 10 | Caching / CDN | **LIGHTWEIGHT** |
+| 11 | Error Tracking / Logs | **REAL** |
+| 12 | Monitoring / Alerts | **LIGHTWEIGHT** |
+| 13 | Testing | **REAL** |
+| 14 | Scaling | **DEFERRED** |
+
+**8 REAL · 1 PARTIAL · 4 LIGHTWEIGHT · 1 DEFERRED** — unchanged from Stage 12,
+which is the correct outcome. Stage 13 was an audit stage; it found and fixed
+defects, and it did not add capability. A matrix that improved during an audit
+would be the suspicious result.

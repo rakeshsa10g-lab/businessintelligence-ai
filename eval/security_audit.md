@@ -144,9 +144,25 @@ strings on the Workspace (P2-03).
 
 ## 6. PII
 
-The generated dataset contains no personal data by construction: accounts are
-opaque ids (`C00001`), there are no names, emails, addresses or payment
-details. `data/generate.py` synthesises everything from a seed.
+**Corrected in Stage 13.** This section previously claimed the dataset has
+"no names, emails, addresses". That was an overstatement, found by inspecting
+the schema rather than trusting the claim.
+
+`fact_orders` carries a **`customer_email`** column — 91,329 distinct values of
+the form `cust_ea50249@example.com`. What is true:
+
+- Every value is synthetic, generated from the seed.
+- `example.com` is **RFC 2606 reserved** and non-routable, so no value can correspond to a real mailbox.
+- The column is **not** in any KPI contract's `column_map`, so it is never selected by `guarded_query` and cannot reach an analysis, a bundle, an LLM payload or the UI.
+
+What remains true as originally stated: accounts are opaque ids (`A1234`,
+`C00001`), and there are no names, addresses, payment details or free-text
+personal information. `distinct_accounts` is rendered as a **count**, never a
+list.
+
+The honest summary is therefore "no real personal data, and one
+email-shaped synthetic column that never leaves the warehouse" — not "no PII
+fields exist".
 
 `distinct_accounts` appears on cohort cards as a **count**, never as a list.
 

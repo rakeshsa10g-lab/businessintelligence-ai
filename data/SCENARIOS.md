@@ -10,7 +10,7 @@ Seed `20260821`. Window 2025-03-01 to 2026-08-17 (535 days). Regenerate with `py
 | `fact_sessions` | 205,440 |
 | `fact_funnel_steps` | 821,760 |
 | `support_tickets` | 895 |
-| `crm_notes` | 334 |
+| `crm_notes` | 329 |
 | `market_events` | 112 |
 | `deploy_changelog` | 177 |
 | `schema_change_log` | 24 |

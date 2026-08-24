@@ -267,47 +267,126 @@ def build_product_analytics(
 # --------------------------------------------------------------------------
 # S3 — ops context: documents and weekly finance
 # --------------------------------------------------------------------------
+# Stage 13 realism audit: the first version of these pools held 13 distinct
+# strings across 895 tickets — 1.5% lexical diversity. Every "document" was a
+# verbatim template repeat, which made retrieval far easier than reality and
+# left dense embeddings with almost no paraphrase to catch. That is the
+# measured reason hybrid retrieval did not beat BM25 on this corpus.
+#
+# The pools below are wider and deliberately varied in register: some formal,
+# some clipped, some with error codes, some vague. Ground truth is untouched —
+# the same number of tickets are planted for the same events with the same
+# ids; only the wording varies. Rare exact tokens (PG-504, ERR_TXN_TIMEOUT)
+# are included on purpose, because they are what BM25 catches and dense misses,
+# and paraphrases of the same complaint are included because they are the
+# reverse. A corpus with neither cannot justify a hybrid retriever.
 TICKET_TEMPLATES = {
     "payment": [
-        ("Payment failed at checkout", "Card was declined repeatedly at the payment step. Tried twice, same error."),
-        ("Gateway timeout on order", "Payment page hung and then timed out. No confirmation received."),
-        ("Card declined but amount debited", "Amount was debited but the order did not go through."),
-        ("Cannot complete payment", "Checkout keeps failing when I click pay. Using UPI."),
-        ("Transaction error at final step", "Getting an error right at the payment attempt stage."),
+        ("Payment failed at checkout",
+         "Card was declined repeatedly at the payment step. Tried twice, same error."),
+        ("Gateway timeout on order",
+         "Payment page hung and then timed out. No confirmation received."),
+        ("Card declined but amount debited",
+         "Amount was debited but the order did not go through."),
+        ("Cannot complete payment",
+         "Checkout keeps failing when I click pay. Using UPI."),
+        ("Transaction error at final step",
+         "Getting an error right at the payment attempt stage."),
+        ("Checkout spins forever",
+         "Pressed pay and the spinner never stopped. Had to close the tab."),
+        ("PG-504 on submit",
+         "Saw error code PG-504 after entering card details. Retried on mobile, same result."),
+        ("Netbanking redirect fails",
+         "Bank page opens then bounces straight back to the cart. Order not placed."),
+        ("Double charge, single order",
+         "Two debits on my statement but only one order in my account."),
+        ("Payment stuck pending",
+         "Order sat in pending for an hour and then cancelled itself."),
+        ("Unable to pay, third attempt",
+         "This is my third try today. Different card each time, still refused."),
+        ("ERR_TXN_TIMEOUT at pay",
+         "Console shows ERR_TXN_TIMEOUT. Nothing happens after that."),
+        ("Wallet payment not going through",
+         "Wallet has balance but checkout rejects it at the last step."),
+        ("Order fails only on the app",
+         "Works on desktop, fails every time on the mobile app at payment."),
     ],
     "delivery": [
         ("Order delayed", "Shipment has not moved for four days."),
         ("Wrong item delivered", "Received a different SKU than ordered."),
         ("Package damaged", "Outer box crushed, item unusable."),
+        ("Courier marked delivered, nothing arrived",
+         "Tracking says delivered but no parcel at the address."),
+        ("Delivery date keeps slipping",
+         "Promised Tuesday, then Thursday, now next week."),
+        ("Partial shipment",
+         "Only two of the four items in the box."),
     ],
     "product": [
         ("Item quality below expectation", "Fabric feels thinner than described."),
         ("Sizing inconsistent", "Ordered the usual size, fits differently."),
+        ("Colour differs from listing",
+         "The shade in the photo is noticeably lighter than what arrived."),
+        ("Stitching came apart",
+         "Seam opened after a single wash."),
     ],
     "account": [
         ("Cannot log in", "Password reset email never arrives."),
         ("Address not saving", "New address disappears after save."),
+        ("OTP not received",
+         "Requested the code four times, nothing on SMS or email."),
+        ("Account locked out",
+         "Told to try again later every time I sign in."),
     ],
     "vague": [
         ("Issue with recent order", "Something went wrong, not sure what."),
         ("General complaint", "Experience was not good this time."),
+        ("Not happy", "Whole thing was more difficult than it should have been."),
     ],
 }
 
 CRM_TEMPLATES = {
-    "competitor": "Buyer flagged a competitor running an aggressive promotion in this category this fortnight.",
-    "stockout": "Account reported repeated out-of-stock messages on core SKUs during the period.",
-    "gateway": "Client escalated repeated payment failures affecting their regional buyers.",
-    "launch": "Early feedback on the new category is positive but availability is limited.",
-    "routine": "Routine quarterly check-in. No issues raised.",
+    "competitor": [
+        "Buyer flagged a competitor running an aggressive promotion in this category this fortnight.",
+        "Account mentioned a rival undercutting us on the same lines since the start of the month.",
+        "Category manager says a competitor's discount is being quoted back at them in negotiations.",
+    ],
+    "stockout": [
+        "Account reported repeated out-of-stock messages on core SKUs during the period.",
+        "Buyer could not find their usual replenishment lines available online.",
+        "Client says availability on the top-selling sizes has been patchy for two weeks.",
+    ],
+    "gateway": [
+        "Client escalated repeated payment failures affecting their regional buyers.",
+        "Account raised that their customers are dropping at the payment step this week.",
+        "Escalation: checkout errors reported across several of their buying teams.",
+    ],
+    "launch": [
+        "Early feedback on the new category is positive but availability is limited.",
+        "Interest in the new range is strong; supply is the constraint, not demand.",
+    ],
+    "routine": [
+        "Routine quarterly check-in. No issues raised.",
+        "Standard account review. Nothing outstanding.",
+        "Scheduled catch-up, no escalations logged.",
+    ],
 }
 
 MARKET_TEMPLATES = [
-    ("Rival launches festive discounting early", "A regional competitor began discounting ahead of the usual festive window."),
-    ("Category price war reported", "Trade press notes sustained discounting across the apparel category."),
-    ("Logistics strike affects deliveries", "Regional transport disruption reported for several days."),
-    ("New entrant expands to region", "A direct-to-consumer entrant announced regional expansion."),
-    ("Consumer sentiment index dips", "Monthly sentiment reading fell in the region."),
+    ("Rival launches festive discounting early",
+     "A regional competitor began discounting ahead of the usual festive window."),
+    ("Category price war reported",
+     "Trade press notes sustained discounting across the apparel category."),
+    ("Logistics strike affects deliveries",
+     "Regional transport disruption reported for several days."),
+    ("New entrant expands to region",
+     "A direct-to-consumer entrant announced regional expansion."),
+    ("Consumer sentiment index dips",
+     "Monthly sentiment reading fell in the region."),
+    ("Festive calendar shifts a week",
+     "The regional festive peak falls later than last year, moving comparable demand."),
+    ("Fuel surcharge raised",
+     "Carriers announced a surcharge affecting last-mile costs in the region."),
 ]
 
 
@@ -398,7 +477,11 @@ def build_ops_context(rng: np.random.Generator) -> dict[str, pd.DataFrame]:
                 "region": region,
                 "segment": segment,
                 "author_role": str(rng.choice(["AE", "CSM", "RSM"])),
-                "body": CRM_TEMPLATES[kind],
+                # CRM_TEMPLATES values are now paraphrase pools, not a
+                # single string (Stage 13 realism audit).
+                "body": CRM_TEMPLATES[kind][
+                    int(rng.integers(len(CRM_TEMPLATES[kind])))
+                ],
                 "kind": kind,
                 "planted_for": planted_for,
             }

@@ -493,17 +493,41 @@ def gate_2(state: InsightState, config=None) -> dict:
 
 @instrument("deterministic_template")
 def deterministic_template(state: InsightState, config=None) -> dict:
-    """The guaranteed-faithful fallback. Cannot fail by construction.
+    """The guaranteed-faithful fallback, put through Gate 2 like any narrative.
 
-    It is still put through Gate 2. A template that could not pass its own
-    verifier would be a bug worth failing on, and asserting that it passes is
-    cheaper than assuming it.
+    "Cannot fail by construction" was too strong. In Stage 13 it DID fail:
+    the builder cited evidence ids straight from the hypothesis, which records
+    more ids than the bundle retains, so a wider corpus produced two dangling
+    citations and Gate 2 blocked its own template. It was unfailable by luck,
+    not by construction.
+
+    The builder is fixed. This node now also refuses to stay silent about it:
+    the edge out of here goes to `calibrate` unconditionally, so a failing
+    template would otherwise be delivered with nobody told. Recording it as a
+    node error surfaces it in telemetry and the Audit view without adding a
+    branch to the graph.
     """
     bundle = state["bundle"]
     narrative = verify_engine.build_deterministic_narrative(bundle)
     report = verify_engine.verify_narrative(
         bundle, narrative, run_id=state["run_id"],
     )
+    if report.hard_violation_count:
+        codes = ", ".join(
+            sorted({v.code.value for v in report.violations
+                    if v.severity.value == "HARD"})
+        )
+        return {
+            "narrative": narrative,
+            "verification": report,
+            "error": (
+                f"deterministic template failed Gate 2 "
+                f"({report.hard_violation_count} hard: {codes}) — this is a "
+                f"builder bug, not a model failure"
+            ),
+            "_gate_result": f"template FAIL ({report.hard_violation_count} hard)",
+            "_branch": "template_failed_verification",
+        }
     return {
         "narrative": narrative,
         "verification": report,

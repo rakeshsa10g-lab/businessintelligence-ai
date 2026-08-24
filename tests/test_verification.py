@@ -807,3 +807,34 @@ def test_verification_does_not_import_a_model_or_a_ui():
         text = path.read_text(encoding="utf-8").lower()
         for name in forbidden:
             assert f"import {name}" not in text, f"{path.name} imports {name}"
+
+
+@pytest.mark.parametrize("fixture_name", ["s1", "s2", "s3"])
+def test_the_template_never_cites_evidence_the_bundle_does_not_hold(
+    fixture_name, request
+):
+    """Stage 13 regression: the template cited ids the bundle had dropped.
+
+    A hypothesis records every evidence id that scored for or against it; the
+    bundle keeps a top-k subset. The builder cited straight from the
+    hypothesis, so on S2 it emitted three contradicting ids against one the
+    bundle retained — and Gate 2 correctly blocked its own template as
+    carrying citations "indistinguishable from a fabricated one".
+
+    It had passed until then only because the sets happened to coincide. A
+    wider document corpus separated them.
+    """
+    bundle = request.getfixturevalue(fixture_name)
+    if bundle.hypotheses:
+        name = fixture_name
+        narrative = build_deterministic_narrative(bundle)
+        held = {i.evidence_id for i in bundle.supporting_evidence}
+        held |= {i.evidence_id for i in bundle.contradicting_evidence}
+        held |= {c.cohort_id for c in bundle.cohorts}
+
+        for claim in narrative.claims:
+            for eid in claim.evidence_ids:
+                assert eid in held, (
+                    f"{name}: template cites {eid!r}, which is not in the "
+                    f"bundle — Gate 2 would reject it as unresolvable"
+                )

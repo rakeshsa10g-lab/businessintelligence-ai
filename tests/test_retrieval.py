@@ -116,9 +116,29 @@ def test_structured_sources_refuse_to_be_embedded(source_type):
 
 
 def test_the_corpus_is_the_three_prose_sources(documents):
+    """The corpus is exactly the three prose tables, entire.
+
+    The size is derived from the tables rather than pinned to a literal.
+    A hardcoded 1341 was here and broke on a legitimate regeneration: the
+    Stage 13 realism audit added a random draw for CRM paraphrase selection,
+    which shifted the generator's RNG stream and moved BACKGROUND note volume
+    by five. Planted evidence and ground truth were untouched — but a literal
+    count cannot tell those two cases apart, so it fails on both.
+    """
+    from semantic import gateway
+
     kinds = {d.source_type for d in documents}
     assert kinds == EMBEDDABLE_SOURCES
-    assert len(documents) == 1341
+
+    con = gateway.connect()
+    expected = sum(
+        con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+        for t in ("support_tickets", "crm_notes", "market_events")
+    )
+    assert len(documents) == expected, (
+        f"corpus holds {len(documents)} documents but the three prose tables "
+        f"hold {expected} — the corpus is dropping or duplicating rows"
+    )
 
 
 def test_documents_are_atomic_not_chunked(documents):

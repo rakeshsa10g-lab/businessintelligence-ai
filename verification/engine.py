@@ -225,6 +225,22 @@ def build_deterministic_narrative(bundle: EvidenceBundle) -> Narrative:
     driver_fact = bundle.fact(f"F-driver-{top.driver_id}")
     refs = [driver_fact.fact_id] if driver_fact else []
 
+    # A hypothesis records every evidence id that scored for or against it.
+    # The BUNDLE keeps a top-k subset. Citing straight from the hypothesis can
+    # therefore reference a document the bundle does not contain — which Gate 2
+    # correctly rejects as indistinguishable from a fabricated citation.
+    #
+    # Found in Stage 13 when a wider document corpus produced 3 contradicting
+    # ids on S2 against 1 retained in the bundle, and Gate 2 blocked the
+    # deterministic template. The template is documented as unfailable by
+    # construction; it was only unfailable by luck.
+    _in_bundle = {i.evidence_id for i in bundle.supporting_evidence}
+    _in_bundle |= {i.evidence_id for i in bundle.contradicting_evidence}
+
+    def cited(ids, limit: int = 3) -> tuple[str, ...]:
+        """Only ids the bundle actually holds, in the hypothesis's order."""
+        return tuple(e for e in ids if e in _in_bundle)[:limit]
+
     if top.status is HypothesisStatus.SUPPORTED:
         lead = f"The leading explanation is {top.statement}"
     elif top.status is HypothesisStatus.CONFLICTED:
@@ -240,7 +256,7 @@ def build_deterministic_narrative(bundle: EvidenceBundle) -> Narrative:
     add(
         f"{lead}{share}.",
         ClaimType.ATTRIBUTION,
-        evidence_ids=top.supporting_evidence_ids[:3],
+        evidence_ids=cited(top.supporting_evidence_ids),
         metric_refs=tuple(refs),
         hypothesis_id=top.hypothesis_id,
         direction="down" if (movement_pct and movement_pct.value < 0) else "up",
@@ -264,7 +280,7 @@ def build_deterministic_narrative(bundle: EvidenceBundle) -> Narrative:
             f"{len(profile.source_types)} source types corroborate this "
             f"explanation.",
             ClaimType.OBSERVATION,
-            evidence_ids=top.supporting_evidence_ids[:3],
+            evidence_ids=cited(top.supporting_evidence_ids),
             direction="n/a",
         )
 
@@ -285,7 +301,7 @@ def build_deterministic_narrative(bundle: EvidenceBundle) -> Narrative:
             f"Evidence arguing against this explanation was also found and is "
             f"listed alongside it.",
             ClaimType.UNCERTAINTY,
-            evidence_ids=top.contradicting_evidence_ids[:3],
+            evidence_ids=cited(top.contradicting_evidence_ids),
         )
 
     # --- 5. recommendation ------------------------------------------------

@@ -109,3 +109,64 @@ Removing them would hide real properties of the system:
 - Detection precision/recall — a real property of the method on a stated dataset.
 - The 12/12 calibration — real counts, correctly caveated, and the Laplace smoothing exists precisely because the raw figure would have been misread by the *system itself*.
 - Impact ranges — the alternative is showing no impact estimate, which makes the recommendation less actionable without making it more honest.
+
+---
+
+# Stage 13 re-audit
+
+Re-run against the additional terms the final brief names: *autonomous*,
+*intelligent*, *real-time*, plus a second pass on impact language.
+
+## New term sweep
+
+| Term | Occurrences in user-facing text | Verdict |
+|---|---|---|
+| **"autonomous"** | 0 in UI. In docs only as a **negation** — "no autonomous agents", "not an agent framework", `test_no_autonomous_agent_constructs` | ✅ correct usage |
+| **"intelligent"** | 0 outside the product name `BusinessIntelligence.ai` | ✅ |
+| **"real-time"** | **0** | ✅ correct — the system is not real-time. A run takes 4–50 s and the UI says so |
+| **"production-ready" / "enterprise-ready"** | **0** | ✅ `docs/PRODUCTION_EVOLUTION.md` argues the opposite |
+| **"accuracy"** | Only in `SYNTHETIC_EVALUATION`-banner context | ✅ |
+
+## Claims changed by the Stage 13 data work
+
+The realism audit widened the document corpus, which **moved measured
+numbers**. Every affected claim is restated here rather than silently updated.
+
+| Claim | Was | Now | Class |
+|---|---|---|---|
+| BM25 precision@5 | 0.810 | **0.552** | `SYNTHETIC_EVALUATION` |
+| BM25 recall@10 | 0.957 | **0.654** | `SYNTHETIC_EVALUATION` |
+| Dense recall@10 | 0.933 | **0.778** | `SYNTHETIC_EVALUATION` |
+| RRF MRR | 0.964 | **0.838** | `SYNTHETIC_EVALUATION` |
+| "Hybrid did not beat BM25 on this corpus" | true, and conceded | **superseded** — dense now beats BM25 on recall@10 by 19% relative | `SYNTHETIC_EVALUATION` |
+| Detection precision/recall | 1.000 / 1.000 | **unchanged** | `SYNTHETIC_EVALUATION` |
+| Corpus size | 1,341 documents | **1,336** | `MEASURED` |
+
+**The direction matters.** Every retrieval figure got *worse*, because the
+previous corpus held only 13 distinct texts across 895 documents and was
+making retrieval close to a lookup. The lower numbers are the more truthful
+ones, and they are the first evidence that the hybrid retriever earns its
+place.
+
+## Corrections made in Stage 13
+
+| # | Claim | Where | Correction |
+|---|---|---|---|
+| 1 | "no names, emails, addresses" | `eval/security_audit.md` | **Overstatement.** `fact_orders.customer_email` exists — 91,329 synthetic `@example.com` values. RFC 2606 reserved, in no KPI `column_map`, unreachable through the gateway. Corrected in place rather than deleted |
+| 2 | "The deterministic template cannot fail by construction" | `graph/nodes.py`, `docs/*` | **False.** It failed Gate 2 on S2 with two dangling citations. It was unfailable by *luck*. Builder fixed; docstring corrected to say so |
+| 3 | Retrieval figures | `eval/retrieval_report.md` | Regenerated on the wider corpus |
+
+## The one claim I want a judge to test
+
+> *"Every number a user sees is computed by SQL, statistics or a business rule
+> — never generated."*
+
+This is the project's central claim and it is `MEASURED`, not asserted:
+
+- Gate 2's numeric allowlist extracts every figure from the narrative and rejects any not derivable from the frozen bundle.
+- The narration request carries **no `tools` key** — asserted against the recorded request, not the code that builds it.
+- `Narrative` has **no `confidence` field** — there is nowhere to write one.
+- 0 false acceptances across 10 hand-built corrupt narratives.
+
+The strongest supporting evidence is that Gate 2 **blocked our own template**
+in Stage 13. A gate that only ever passes what we produce is not a gate.
