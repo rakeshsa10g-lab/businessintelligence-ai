@@ -48,9 +48,9 @@ Plumbing implemented and tested with fake clients; live figures are
 
 | ID | Deliverable | File | Status | Remaining |
 |---|---|---|:---:|---|
-| **R2-DEL-1** | Business Proposal | — | ❌ **NOT STARTED** | See below |
+| **R2-DEL-1** | Business Proposal | `submission/R2_BUSINESS_PROPOSAL.md` + `_SOURCE.md` | ✅ **COMPLETE** | Nothing |
 | **R2-DEL-2** | Working Prototype | the repository | ✅ **COMPLETE** | Nothing |
-| **R2-DEL-3** | Pitch Presentation | — | ❌ **NOT STARTED** | See below |
+| **R2-DEL-3** | Pitch Presentation | `submission/R2_PITCH_DECK.md` + `_SOURCE.md` + `R2_PITCH_SPEAKER_NOTES.md` | ⚠ **CONTENT COMPLETE** | **Render only** — see below |
 
 ### R2-DEL-2 — complete
 
@@ -63,38 +63,43 @@ streamlit run app.py
 8 demoable scenarios · 573 tests · CI workflow · clean git tree · reproducible
 fixtures · no secrets.
 
-### R2-DEL-1 — Business Proposal: what remains
+### R2-DEL-1 — Business Proposal: complete
 
-The case asks for problem framing, solution design, target users, business
-case and impact, a phased roadmap, and key risks with mitigations.
+`submission/R2_BUSINESS_PROPOSAL.md` — 17 sections, ~5,600 words, with
+`R2_BUSINESS_PROPOSAL_SOURCE.md` mapping every claim of consequence to its class
+(**[M]** measured · **[S]** synthetic evaluation · **[R]** research-sourced ·
+**[A]** assumption · **[I]** illustrative) and its artefact.
 
-**What already exists and can be cited directly:**
+**How the business-case constraint was resolved:** option (b). Section 12
+presents four *mechanisms* of value — operational, decision, risk and governance
+— and declines to size three of them, stating for each what we can evidence and
+what we cannot. Only the risk mechanism is backed by measurement. No revenue,
+cost-saving or time-saved figure appears anywhere, and the section says why in
+as many words.
 
-| Proposal section | Source |
+### R2-DEL-3 — Pitch Presentation: content complete, render outstanding
+
+**Written:**
+
+| File | What it is |
 |---|---|
-| Problem framing | `docs/ROUND2_CASE.md` + `docs/ROUND1_MASTER.md` (cited research) |
-| Solution design | `docs/FINAL_SYSTEM_ARCHITECTURE.md` |
-| Target users | 3 implemented personas with real entitlement differences |
-| Phased roadmap | `docs/PRODUCTION_EVOLUTION.md` — 8 migrations, each with a trigger |
-| Key risks | `eval/judge_defense.md` weak-answer table; `eval/security_audit.md` residual risks |
-| Evidence | every report in `eval/` |
+| `submission/R2_PITCH_DECK.md` | 11-slide build spec, row by row, in the Round 1 design-system format |
+| `submission/R2_PITCH_DECK_SOURCE.md` | Every slide claim → class → artefact. No number introduced that is not in `R2_BUSINESS_PROPOSAL_SOURCE.md` (§13 lists the repository artefacts that extend it) |
+| `submission/R2_PITCH_SPEAKER_NOTES.md` | Slide-by-slide talk track, four timing plans, Q&A index |
 
-**What must be written fresh — and the honest constraint:** the **business
-case and impact** section. No revenue, cost-saving or time-saved figure is
-supported by anything in this repository, and `eval/claim_audit.md` confirms
-none is claimed. The proposal must either (a) present impact as an explicit
-modelled scenario with its assumptions stated, or (b) present the *mechanism*
-of value and decline to size it. Inventing a number here would contradict the
-one thing this project has been consistent about.
+**Reconciled, not duplicated:** the speaker notes name
+`eval/final_demo_script.md` as authoritative for the live demo and provide a
+slide ↔ demo-beat mapping so the two are never performed against each other.
+`eval/judge_defense.md` remains the Q&A source; the notes index into it rather
+than restating it.
 
-### R2-DEL-3 — Pitch Presentation: what remains
-
-**Already written:** `eval/final_demo_script.md` (3-minute structure, beat by
-beat, with what not to do) and `eval/judge_defense.md` (24 anticipated
-questions with weak answers flagged).
-
-**Must be built:** the slide deck itself. Suggested spine — the three things
-from the go/no-go below.
+**What remains — rendering only, no content work.** No scripted `.pptx`
+workflow is configured in this repository and none was used in Round 1. The
+Round 1 path was: build 1600×900 HTML in
+`05_Design_System/case-deck-design-system` under `theme-accenture` → export PNG →
+place into the official Accenture template (which mandates Arial and supplies the
+title, team-details, video and thank-you slides) → export PDF. `R2_PITCH_DECK.md`
+carries that procedure and the exact palette in its build notes.
 
 ---
 
@@ -121,12 +126,13 @@ from the go/no-go below.
 
 | # | Item | Severity | Blocks submission? |
 |---|---|---|:---:|
-| 1 | **R2-DEL-1** business proposal not written | High | **Yes** — it is a required deliverable |
-| 2 | **R2-DEL-3** pitch deck not built | High | **Yes** — it is a required deliverable |
-| 3 | Live LLM evaluation pending | Medium | No — template mode is honest and labelled |
-| 4 | CI never executed | Low | No |
-| 5 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
-| 6 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
+| 1 | **R2-DEL-3 not rendered** — deck content written, `.pptx`/`.pdf` not produced | High | **Yes** — the competition accepts a file, not a markdown spec |
+| 2 | Live LLM evaluation pending | Medium | No — template mode is honest and labelled |
+| 3 | CI never executed | Low | No |
+| 4 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
+| 5 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
 
-**Items 1 and 2 are the only submission blockers, and both are documents
-rather than code.** The prototype (R2-DEL-2) is complete.
+**Item 1 is the only remaining submission blocker, and it is a build step rather
+than a decision.** Every content question the deck raises is answered in
+`R2_PITCH_DECK.md`, and every number in it is traced in
+`R2_PITCH_DECK_SOURCE.md`. R2-DEL-1 and R2-DEL-2 are complete.
