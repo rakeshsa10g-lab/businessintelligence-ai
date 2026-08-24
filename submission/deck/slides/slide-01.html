@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>01 — The gap has not moved</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab active">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">01</span> The gap has not moved: dashboards show what moved, never why</header>
+
+  <div class="body">
+
+    <div class="grid cols-4">
+      <div class="stat xl"><div class="n">73%</div><div class="l">of BI implementations fail on the diagnostic gap — not on technology</div></div>
+      <div class="stat xl"><div class="n">~21%</div><div class="l">of employees actively use the dashboards that cannot answer "why"</div></div>
+      <div class="stat xl"><div class="n">~70%</div><div class="l">of analyst time spent investigating alerts that turn out to be legitimate</div></div>
+      <div class="stat xl"><div class="n">22%</div><div class="l">decline in detection accuracy past 30+ alerts reviewed a day</div></div>
+    </div>
+
+    <div class="grid split-32">
+      <div class="card">
+        <div class="card-title">Three reasons the gap persists</div>
+        <ul class="bul">
+          <li><span class="b">Detection is not explanation.</span> Tools flag that a number moved. The mechanism stays a manual investigation.</li>
+          <li><span class="b">Evidence lives in two worlds.</span> Metrics sit in the warehouse; causes sit in support tickets, CRM notes, deploy changelogs and news.</li>
+          <li><span class="b">Confidence is unpriced.</span> No tool states how sure it is, so a leader cannot separate a real finding from a fluent-sounding guess.</li>
+        </ul>
+      </div>
+      <div class="card tint">
+        <div class="card-title">Verified market voice</div>
+        <div class="stack" style="gap:6px">
+          <div class="quote-box"><div class="q">"Dashboards are great at telling you what's happening, but the moment you ask why…"</div><div class="a">ThoughtSpot user · G2</div></div>
+          <div class="quote-box"><div class="q">"…correlations that aren't actually meaningful without manual review."</div><div class="a">Tellius user · G2</div></div>
+          <div class="quote-box"><div class="q">"Sales Ops deletes columns in Salesforce. Marketing changes the definition of a lead bucket."</div><div class="a">r/BusinessIntelligence</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:4px">The path a leader lives today</div>
+      <div class="flow">
+        <div class="step"><div class="sh"><span class="i">1</span>Dashboard flags a drop</div><div class="sb">No cause, no confidence, no next step.</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="sh"><span class="i">2</span>Analyst pulls data</div><div class="sb">Four or more tools, manually reconciled. <span class="pill">Day 1</span></div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="sh"><span class="i">3</span>Cross-references</div><div class="sb">Tickets, CRM notes, changelogs, news. <span class="pill">Day 2</span></div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="sh"><span class="i">4</span>Writes a narrative</div><div class="sb">Plausible, unranked, no stated confidence.</div></div>
+        <div class="arrow">→</div>
+        <div class="step dark"><div class="sh"><span class="i">5</span>Window has closed</div><div class="sb">The decision was already taken without it.</div></div>
+      </div>
+    </div>
+
+    <div class="band dark">Every category in this market produces an explanation. None of them declines to produce one.</div>
+  </div>
+
+  <div class="footnote">Sources: sranalytics.io BI failure study · Gartner 2025 · G2 &amp; Capterra verified reviews · r/BusinessIntelligence</div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>10 — Prototype readiness, with the gaps named first</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab active">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">10</span> Prototype readiness, with the gaps named first</header>
+
+  <div class="body fill">
+
+    <div class="grid cols-4">
+      <div class="stat xl"><div class="n">8</div><div class="l">REAL — design, architecture, frontend, backend, storage, security, error handling, testing</div></div>
+      <div class="stat xl"><div class="n">1</div><div class="l">PARTIAL — auth: authorisation real, <b>authentication absent</b></div></div>
+      <div class="stat xl"><div class="n">4</div><div class="l">LIGHTWEIGHT — hosting, CI/CD, caching, monitoring</div></div>
+      <div class="stat xl"><div class="n">1</div><div class="l">DEFERRED — scaling, with named triggers</div></div>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="risk">
+        <div class="r-head">No live LLM evaluation</div>
+        <div class="r-body">No API key in this environment. Latency, tokens, cost unmeasured and not estimated. Harness written, unrun.</div>
+      </div>
+      <div class="risk">
+        <div class="r-head">No real-data validation</div>
+        <div class="r-body">Every metric is synthetic. The largest open risk in the project.</div>
+      </div>
+      <div class="risk">
+        <div class="r-head">No baseline measurement</div>
+        <div class="r-body">Without a baseline investigation time, no time-saving claim is possible.</div>
+      </div>
+      <div class="risk">
+        <div class="r-head">~2 concurrent users</div>
+        <div class="r-body">DuckDB permits one writer; audit log writes on every read. "Scales horizontally" would be false.</div>
+      </div>
+    </div>
+
+    <div class="band outline sm">Running without a model is a <b>supported</b> mode, not a degraded one. The UI labels it "Verified template mode." Numbers, evidence and decision are identical either way.</div>
+
+    <div>
+      <div class="flow">
+        <div class="step tint"><div class="sh">Dropdown → enterprise IAM</div><div class="sb">Before any real data</div></div>
+        <div class="arrow">→</div>
+        <div class="step tint"><div class="sh">In-memory index → managed vector search</div><div class="sb">First data-isolation requirement — security before scale</div></div>
+        <div class="arrow">→</div>
+        <div class="step tint"><div class="sh">SQLite → durable workflow state</div><div class="sb">Runs on more than one process</div></div>
+        <div class="arrow">→</div>
+        <div class="step tint"><div class="sh">DuckDB → enterprise warehouse</div><div class="sb">A second writer is needed</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">What would not change: the deterministic/AI boundary, the evidence freeze, entitlement-before-ranking, the typed module contracts. Sources: eval/prototype_readiness.md · docs/PRODUCTION_EVOLUTION.md</div>
+</section>
+
+</div>
+</body>
+</html>

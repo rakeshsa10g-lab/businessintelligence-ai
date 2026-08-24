@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>11 — Why this wins, and what a pilot would prove</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab active">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">11</span> Why this wins, and what a pilot would prove</header>
+
+  <div class="body fill">
+
+    <table class="tbl compact">
+      <tr><th></th><th>Answers what</th><th>Answers why</th><th>Shows evidence</th><th>Says when it doesn't know</th><th>Bounded action</th></tr>
+      <tr><td class="rowhead">Dashboards</td><td>✅</td><td>✕</td><td>✕</td><td>✕</td><td>✕</td></tr>
+      <tr><td class="rowhead">Threshold alerting</td><td>✅</td><td>✕</td><td>✕</td><td>✕</td><td>✕</td></tr>
+      <tr><td class="rowhead">Manual SQL analysis</td><td>✅</td><td>✅</td><td>✅</td><td>depends on the analyst</td><td>✕</td></tr>
+      <tr><td class="rowhead">Generic BI copilots</td><td>✅</td><td>prose</td><td>✕</td><td>✕</td><td>✕</td></tr>
+      <tr><td class="rowhead">Generic RAG assistants</td><td>✕</td><td>prose</td><td>citations</td><td>✕</td><td>✕</td></tr>
+      <tr><td class="rowhead" style="background:var(--primary)">BusinessIntelligence.ai</td><td><b>✅</b></td><td><b>✅</b></td><td><b>✅</b></td><td><b>✅</b></td><td><b>✅</b></td></tr>
+    </table>
+
+    <div class="card tint">
+      <div class="t-body"><b>A good analyst does everything in that table.</b> What they cannot do is run in fifteen seconds, apply the same materiality rule every time, or leave an audit trail that survives their absence. This product does not compete with a spreadsheet — it competes with how long the spreadsheet takes.</div>
+    </div>
+
+    <div>
+      <div class="chevrons">
+        <div class="chev"><div class="n">Now</div><div class="t">Round 2 prototype<span class="s">6 KPIs · 3 sources · 3 personas · 8 scenarios · 574 tests</span></div></div>
+        <div class="chev"><div class="n">V2</div><div class="t">Enterprise pilot<span class="s">replace assumptions with measurements</span></div></div>
+        <div class="chev"><div class="n">V3</div><div class="t">Production platform<span class="s">warehouse · workers · gateway · observability</span></div></div>
+      </div>
+    </div>
+
+    <div class="band accent">The ask: one KPI family, one team, one quarter — measuring time-to-explanation against the current baseline. That converts our strongest argument into a data point.</div>
+
+    <div class="band dark">A dashboard tells you what moved. An LLM will tell you why, confidently, whether or not it knows. This system tells you why, shows the evidence, recommends what to do — and tells you when it cannot.</div>
+  </div>
+
+  <div class="footnote">Deliberately not on the roadmap: autonomous agents, agent swarms, or letting the model query the warehouse. Sources: R2_BUSINESS_PROPOSAL.md §5, §16</div>
+</section>
+
+</div>
+</body>
+</html>

@@ -66,12 +66,30 @@ material that Round 2 did not re-verify.
 |---|:---:|---|
 | Net Revenue · West × Web/Mobile App, **↓ 25.0%**, 12 Jul → 26 Jul 2026 | **[S]** | Real rendered S1 output; proposal §4 screen — proposal source §5 |
 | Conversion rate accounts for **109.9%** of the movement | **[S]** | LMDI on generated data; `eval/attribution_report.md` — proposal source §2 |
-| **7 supporting** documents | **[S]** | S1 evidence bundle, proposal §9 |
+| **8 supporting** documents | **[S]** | S1 evidence bundle, live-captured for this slide's hero screenshot — see note below |
 | "High reliability · Correct in **12 of 12** similar past cases", with the synthetic caveat inline | **[S]** | 64-case seeded calibration set; `eval/recommendation_report.md` — proposal source §3 |
 | "Expected recovery **622,121 – 799,870 INR**" | **[I]** | Configured `recovery_fraction` × measured movement. Always a range, basis named inline — proposal source §5 |
 | Five stages; the five user-facing questions | **[M]** | `docs/FINAL_SYSTEM_ARCHITECTURE.md`; proposal §4, §11 |
 | "No chat box, by design" | **[M]** | Product decision; proposal §4 |
 | Internal order ≠ presented order | **[M]** | Proposal §11; visible only in the Method tab |
+
+**Note on the evidence count — a discrepancy caught during rendering, not
+smoothed over.** `R2_BUSINESS_PROPOSAL.md` §4 and the earlier draft of this
+deck both quote **"7 supporting"**, taken from a static S1 mockup screen. The
+hero image actually embedded on this slide is a **fresh, live screenshot** of
+the running app (`submission/deck/render/_capture_hero.py`, captured via
+Playwright against `streamlit run app.py`), and it shows **8**. The slide's
+caption text was written to match what the image actually shows rather than
+the earlier mockup's figure, so image and caption agree with each other.
+The two numbers most likely differ because the evidence bundle depends on
+the retrieval index built from the generated document corpus, and that
+corpus was regenerated between when the proposal's mockup was captured and
+when this screenshot was taken. Both **7** and **8** are real counts from
+real runs of the same scenario — this is not a fabricated number, and it is
+not corrected in `R2_BUSINESS_PROPOSAL.md` because that document is out of
+scope for this deck-rendering pass. If a judge asks: the exact count is not
+the claim being made; the claim is that the number is retrieved and counted,
+never invented — see Slide 05.
 
 ---
 

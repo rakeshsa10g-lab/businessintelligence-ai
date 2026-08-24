@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>02 — The obvious fix is the dangerous one</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab active">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">02</span> The obvious fix is the dangerous one</header>
+
+  <div class="body fill">
+
+    <div class="thesis">"The capability you want for root-cause analysis actively works against the humility you need."</div>
+
+    <div class="grid cols-3">
+      <div class="card strong">
+        <div class="card-title">A model that reasons</div>
+        <div class="t-body">A 2026 fidelity audit found an LLM <span class="em-dan">inverted the risk direction on 3 of 4 factors</span> in a credit-risk narrative. Its priors overrode the supplied evidence — under constrained prompting.</div>
+      </div>
+      <div class="card strong">
+        <div class="card-title">A model that will not stop</div>
+        <div class="t-body">Reasoning-tuned models abstain <span class="em-dan">24% worse</span> than their non-reasoning counterparts (AbstentionBench). The better it reasons, the less it admits it cannot.</div>
+      </div>
+      <div class="card strong">
+        <div class="card-title">An industry that has named it</div>
+        <div class="t-body">Gartner names <span class="b">"agent drift"</span> as the risk in autonomous analytics and prescribes <span class="b">guardian layers</span> as the mitigation.</div>
+      </div>
+    </div>
+
+    <div class="band accent">If the default behaviour of a capable model is to answer confidently, abstention is not a feature you add later — it is an architecture you start from.</div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:4px">What that means for the build</div>
+      <div class="chevrons">
+        <div class="chev"><div class="n">1</div><div class="t">The model may not<span class="s">reach data</span></div></div>
+        <div class="chev"><div class="n">2</div><div class="t">The model may not<span class="s">produce a number</span></div></div>
+        <div class="chev"><div class="n">3</div><div class="t">The model may not<span class="s">choose what happens next</span></div></div>
+        <div class="chev"><div class="n">4</div><div class="t">The model may not<span class="s">have the last word</span></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footnote">Sources: arXiv 2026 narrative-fidelity audit · AbstentionBench, Kirichenko et al. 2025 (arXiv:2506.09038) · Gartner</div>
+</section>
+
+</div>
+</body>
+</html>

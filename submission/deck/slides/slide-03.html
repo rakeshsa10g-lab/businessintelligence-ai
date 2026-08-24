@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>03 — One engine, from a number to a decision</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+  .shot-frame {
+    border: var(--bw-strong) solid var(--card-line);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    height: 100%;
+    box-shadow: var(--shadow);
+  }
+  .shot-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab active">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">03</span> Our Solution: one engine, from a number to a decision</header>
+
+  <div class="body">
+
+    <div class="chevrons">
+      <div class="chev"><div class="n">1</div><div class="t">DETECT<span class="s">Is it real, and does it matter?</span></div></div>
+      <div class="chev"><div class="n">2</div><div class="t">ATTRIBUTE<span class="s">What drove it, and where?</span></div></div>
+      <div class="chev"><div class="n">3</div><div class="t">EXPLAIN<span class="s">What does the evidence support?</span></div></div>
+      <div class="chev"><div class="n">4</div><div class="t">RECOMMEND<span class="s">What should happen, who acts?</span></div></div>
+      <div class="chev"><div class="n">5</div><div class="t">VERIFY<span class="s">Can every claim be checked?</span></div></div>
+    </div>
+
+    <div class="grid split-21 grow" style="min-height:0;">
+      <div class="shot-frame">
+        <img src="../assets/hero_s1_workspace.png" alt="The actual running Streamlit workspace: net revenue down 25.0%, material movement, conversion rate the largest contributor at 109.9%">
+      </div>
+      <div class="card tint" style="justify-content:flex-start;gap:8px">
+        <div class="card-title">Real rendered output — S1, Workspace tab</div>
+        <ul class="bul sm">
+          <li><span class="b">What changed?</span> The movement is the largest thing on the page — West × Web/Mobile, −25.0%, flagged material.</li>
+          <li><span class="b">Why?</span> Ranked drivers, arithmetic explained rather than hidden.</li>
+          <li><span class="b">Evidence?</span> 8 supporting documents, one click away.</li>
+          <li><span class="b">How reliable?</span> A track record with its caveat inline, never a footnote.</li>
+          <li><span class="b">What do I do?</span> Escalate to Engineering, owner named, a bounded button: "Raise the request".</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="band outline sm">A decision workspace, not a chatbot — no chat box, by design. A conversational surface invites questions the model must not answer, from data it must not reach.</div>
+  </div>
+
+  <div class="footnote">Internally the system runs Detect → Attribute → Retrieve → Verify → Recommend. The user never sees that order — it appears only in the Method tab.</div>
+</section>
+
+</div>
+</body>
+</html>

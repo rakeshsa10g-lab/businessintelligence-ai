@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>08 — Who may see what, and who may do what</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab active">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">08</span> Who may see what, and who may do what</header>
+
+  <div class="body fill">
+
+    <div class="grid cols-3">
+      <div class="persona">
+        <div class="av">M</div>
+        <div>
+          <div class="nm">Meera · Analytics Lead</div>
+          <div class="meta">Is this defensible enough to circulate?</div>
+          <div class="quote">Method, contribution, counterfactual, full lineage. Investigation becomes review.</div>
+        </div>
+      </div>
+      <div class="persona">
+        <div class="av">P</div>
+        <div>
+          <div class="nm">Priya · Regional Ops Lead</div>
+          <div class="meta">Do I escalate, and to whom?</div>
+          <div class="quote">Region-scoped, named owner. <b>Denied crm_notes</b> — told <i>how many</i> were withheld.</div>
+        </div>
+      </div>
+      <div class="persona">
+        <div class="av">A</div>
+        <div>
+          <div class="nm">Arjun · Finance Director</div>
+          <div class="meta">Is this material to the quarter?</div>
+          <div class="quote">Impact range, basis named. A higher configured decision value — same evidence can route differently.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band accent">The button says "Raise the request." It does not say "roll back."</div>
+
+    <div class="grid split-21">
+      <div class="card">
+        <div class="card-title">Automating a request is not automating a remediation</div>
+        <div class="t-body">The persona holds <b>request rights</b> on this lever, not approval rights. What gets automated is <i>raising an engineering request</i>. Executing a rollback is a different lever — no persona in this system can approve it, and it sits on a <b>never-automate list</b>. The enterprise fear is not a wrong explanation; it is a correct explanation wired to the wrong action.</div>
+      </div>
+      <div class="stack" style="gap:6px">
+        <div class="impact narrow"><div class="plate">32</div><div class="desc">security tests: row filters, column masks, source denials</div></div>
+        <div class="impact narrow"><div class="plate">6-stage</div><div class="desc">leak chain, with a non-vacuity control</div></div>
+        <div class="impact narrow"><div class="plate">0</div><div class="desc">restricted items reaching any stage</div></div>
+      </div>
+    </div>
+
+    <div class="card strong" style="border-color:var(--danger)">
+      <div class="t-small"><b>There is no authentication.</b> Persona is a dropdown. Authorisation is real and tested end to end; identity is not. Enterprise IAM is V2 priority 1 — triggered by <i>"before any real data,"</i> not by a user count.</div>
+    </div>
+  </div>
+
+  <div class="footnote">Sources: eval/security_audit.md · config/levers.yaml · docs/PRODUCTION_EVOLUTION.md</div>
+</section>
+
+</div>
+</body>
+</html>

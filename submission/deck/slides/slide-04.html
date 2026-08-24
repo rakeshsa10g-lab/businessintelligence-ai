@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>04 — Round 1 promised this. Round 2 runs it, and corrects it.</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab active">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">04</span> Round 1 promised this. Round 2 runs it, and corrects it.</header>
+
+  <div class="body fill">
+
+    <div class="band dark">Round 1 was a concept. Round 2 is 574 passing tests, 8 executable scenarios — and a list of things we said we would build and did not.</div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:4px">Kept, and now running</div>
+      <table class="tbl compact">
+        <tr><th style="width:40%">Round 1 promise</th><th>Round 2 evidence</th></tr>
+        <tr><td>Five stages, one engine</td><td>26-node state machine, 11 typed terminals, 8/8 scenarios end to end</td></tr>
+        <tr><td>Materiality gate — statistical <b>and</b> business</td><td>S7: a channel rename reads +5.9% growth. Real, immaterial — no alert</td></tr>
+        <tr><td>"Escalation is a cost rule, not a threshold"</td><td>Cost-sensitive deferral, implemented — it routes S2 to a human</td></tr>
+        <tr><td>The LLM narrates only what was already verified</td><td>Narration request carries no <code>tools</code> key — absent, not empty</td></tr>
+      </table>
+    </div>
+
+    <div>
+      <div class="kicker" style="margin-bottom:4px">Changed, and why — intellectual honesty, not apology</div>
+      <table class="tbl compact">
+        <tr><th style="width:32%">Round 1 said</th><th style="width:34%">Round 2 ships</th><th>Why</th></tr>
+        <tr><td>Confidence, zero point eight two</td><td>A calibrated band + track record</td><td><code>Narrative</code> has no <code>confidence</code> field — nowhere to write one</td></tr>
+        <tr><td>CUSUM · Bayesian online detection</td><td>STL + robust MAD + PELT</td><td>The other two were not built. Claiming them is the exact failure we exist to prevent</td></tr>
+        <tr><td>Conformal prediction</td><td>Ranked hypotheses + cost-sensitive deferral</td><td>Conformal prediction was not implemented</td></tr>
+        <tr><td>Revenue dropped 8% in the West</td><td>West × Web/Mobile App, −25.0% <span class="t-cap">(measured)</span></td><td>Quotes the movement the detector actually measured</td></tr>
+        <tr><td>"Two days becomes minutes"</td><td>4–50 s measured. <b>No time-saving claim</b></td><td>No baseline investigation time was ever measured</td></tr>
+      </table>
+    </div>
+
+    <div class="band accent">Four of five changes made the claim smaller. That is what having a working system does to a pitch.</div>
+  </div>
+
+  <div class="footnote">Sources: eval/claim_audit.md · eval/attribution_report.md · docs/ROUND1_MASTER.md §6 (Deck Content Spec)</div>
+</section>
+
+</div>
+</body>
+</html>

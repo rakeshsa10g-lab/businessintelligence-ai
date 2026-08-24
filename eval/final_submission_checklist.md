@@ -50,7 +50,7 @@ Plumbing implemented and tested with fake clients; live figures are
 |---|---|---|:---:|---|
 | **R2-DEL-1** | Business Proposal | `submission/R2_BUSINESS_PROPOSAL.md` + `_SOURCE.md` | ✅ **COMPLETE** | Nothing |
 | **R2-DEL-2** | Working Prototype | the repository | ✅ **COMPLETE** | Nothing |
-| **R2-DEL-3** | Pitch Presentation | `submission/R2_PITCH_DECK.md` + `_SOURCE.md` + `R2_PITCH_SPEAKER_NOTES.md` | ⚠ **CONTENT COMPLETE** | **Render only** — see below |
+| **R2-DEL-3** | Pitch Presentation | `submission/R2_BUSINESSINTELLIGENCE_PITCH.pdf` (+ `submission/deck/` source) | ✅ **COMPLETE** | Nothing |
 
 ### R2-DEL-2 — complete
 
@@ -77,14 +77,14 @@ what we cannot. Only the risk mechanism is backed by measurement. No revenue,
 cost-saving or time-saved figure appears anywhere, and the section says why in
 as many words.
 
-### R2-DEL-3 — Pitch Presentation: content complete, render outstanding
+### R2-DEL-3 — Pitch Presentation: complete, rendered
 
 **Written:**
 
 | File | What it is |
 |---|---|
 | `submission/R2_PITCH_DECK.md` | 11-slide build spec, row by row, in the Round 1 design-system format |
-| `submission/R2_PITCH_DECK_SOURCE.md` | Every slide claim → class → artefact. No number introduced that is not in `R2_BUSINESS_PROPOSAL_SOURCE.md` (§13 lists the repository artefacts that extend it) |
+| `submission/R2_PITCH_DECK_SOURCE.md` | Every slide claim → class → artefact. No number introduced that is not in `R2_BUSINESS_PROPOSAL_SOURCE.md` (§13 lists the repository artefacts that extend it; a note documents one live-vs-mockup number discrepancy caught during rendering — see below) |
 | `submission/R2_PITCH_SPEAKER_NOTES.md` | Slide-by-slide talk track, four timing plans, Q&A index |
 
 **Reconciled, not duplicated:** the speaker notes name
@@ -93,13 +93,15 @@ slide ↔ demo-beat mapping so the two are never performed against each other.
 `eval/judge_defense.md` remains the Q&A source; the notes index into it rather
 than restating it.
 
-**What remains — rendering only, no content work.** No scripted `.pptx`
-workflow is configured in this repository and none was used in Round 1. The
-Round 1 path was: build 1600×900 HTML in
-`05_Design_System/case-deck-design-system` under `theme-accenture` → export PNG →
-place into the official Accenture template (which mandates Arial and supplies the
-title, team-details, video and thank-you slides) → export PDF. `R2_PITCH_DECK.md`
-carries that procedure and the exact palette in its build notes.
+**Rendered — `submission/R2_BUSINESSINTELLIGENCE_PITCH.pdf`, 11 pages.** Built
+by reusing the Round 1 design system (`theme-accenture`, Arial, 1600×900,
+claim-not-label titles), vendored into `submission/deck/design/` so the
+pipeline is self-contained: 11 HTML slide files → headless-Chrome screenshot
+via Playwright (`python -m submission.deck.render`) → combined to one PDF.
+Slide 03's hero visual is a **real, live screenshot** of the running Streamlit
+app (S1, Workspace tab) captured with `submission/deck/render/_capture_hero.py`
+— not a mockup. Full visual QA (every slide inspected as a rendered image,
+two real bugs found and fixed) is `eval/pitch_deck_visual_qa.md`.
 
 ---
 
@@ -126,13 +128,13 @@ carries that procedure and the exact palette in its build notes.
 
 | # | Item | Severity | Blocks submission? |
 |---|---|---|:---:|
-| 1 | **R2-DEL-3 not rendered** — deck content written, `.pptx`/`.pdf` not produced | High | **Yes** — the competition accepts a file, not a markdown spec |
-| 2 | Live LLM evaluation pending | Medium | No — template mode is honest and labelled |
-| 3 | CI never executed | Low | No |
-| 4 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
-| 5 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
+| 1 | Live LLM evaluation pending | Medium | No — template mode is honest and labelled |
+| 2 | CI never executed | Low | No |
+| 3 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
+| 4 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
+| 5 | Evidence count on the pitch-deck hero slide (8) differs from the business proposal's mockup (7) | Low | No — both are real counts from real runs; documented in `R2_PITCH_DECK_SOURCE.md` rather than silently reconciled |
 
-**Item 1 is the only remaining submission blocker, and it is a build step rather
-than a decision.** Every content question the deck raises is answered in
-`R2_PITCH_DECK.md`, and every number in it is traced in
-`R2_PITCH_DECK_SOURCE.md`. R2-DEL-1 and R2-DEL-2 are complete.
+**No open item blocks submission.** All three deliverables — R2-DEL-1
+(Business Proposal), R2-DEL-2 (Working Prototype), R2-DEL-3 (Pitch
+Presentation, rendered to `submission/R2_BUSINESSINTELLIGENCE_PITCH.pdf`) —
+are complete.

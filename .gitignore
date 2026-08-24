@@ -9,6 +9,9 @@ venv/
 data/warehouse.duckdb
 data/audit.duckdb
 data/graph_checkpoints.sqlite
+# DuckDB's own WAL, written whenever a connection reads/writes the warehouse
+# (e.g. the Streamlit app). Same rationale as the SQLite WAL/SHM below.
+data/*.duckdb.wal
 # SQLite writes companion WAL/SHM files next to the database. They are not
 # the checkpoint, but they are just as much runtime state, and an orphaned
 # pair survives deletion of the .sqlite itself.

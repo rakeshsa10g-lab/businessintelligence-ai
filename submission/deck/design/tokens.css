@@ -1,0 +1,176 @@
+/* ============================================================
+   TOKENS — colours, type scale, spacing, radii
+   Themes are reverse-engineered from decks that were actually
+   shortlisted in product case competitions.
+   Set a theme by putting the class on <body> or on a .slide.
+   ============================================================ */
+
+:root {
+  /* ---- canvas ---- */
+  --slide-w: 1600px;
+  --slide-h: 900px;
+
+  /* ---- type scale (tuned for a 1600x900 canvas) ----
+     Sized so a slide stays readable when it is projected or
+     viewed as a page-width image, not just at full resolution. */
+  --fs-slide-title: 33px;
+  --fs-band:        23px;
+  --fs-card-title:  19px;
+  --fs-body:        15.5px;
+  --fs-small:       14px;
+  --fs-caption:     12.5px;
+  --fs-source:      11.5px;
+  --fs-stat-xl:     50px;
+  --fs-stat-lg:     38px;
+  --fs-stat-md:     27px;
+
+  /* Arial only. Competition templates routinely mandate it, and it is the one
+     sans that renders identically on every judge's machine. Override --ff-sans
+     in a theme if a brand font is genuinely required. */
+  --ff-sans: Arial, Helvetica, sans-serif;
+  --ff-mono: Arial, Helvetica, sans-serif;
+
+  --lh-tight: 1.18;
+  --lh-body:  1.38;
+
+  /* ---- spacing ---- */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 20px; --s6: 24px; --s7: 32px; --s8: 40px;
+
+  /* ---- radii & lines ---- */
+  --r-sm: 4px; --r-md: 7px; --r-lg: 11px; --r-pill: 999px;
+  --bw: 1.5px;              /* standard border width */
+  --bw-strong: 2.5px;       /* emphasis border (HiLabs uses heavy borders) */
+
+  /* ---- slide padding ---- */
+  --pad-x: 22px;
+  --pad-y: 16px;
+}
+
+/* ============================================================
+   THEME A — "civic"  (HiLabs style: white ground, royal blue,
+   yellow highlight, light-blue panels, heavy dark borders)
+   Best for: analytical / enterprise / healthcare / B2B cases.
+   ============================================================ */
+.theme-civic {
+  --bg:            #FFFFFF;
+  --ink:           #2B2B31;
+  --ink-soft:      #4D4D59;
+  --ink-mute:      #6E6E7A;
+
+  --primary:       #2A4BB8;   /* section bars, links, headers */
+  --primary-deep:  #1B3286;
+  --primary-tint:  #DDEBF9;   /* panel fill */
+  --primary-tint2: #F1F7FD;   /* lightest panel */
+
+  --accent:        #FFEF46;   /* highlight bar / stat numerals */
+  --accent-ink:    #2B2B31;   /* text on accent */
+
+  --dark:          #3A3A42;   /* tab nav + stat plate */
+  --dark-ink:      #FFFFFF;
+
+  --danger:        #C62828;
+  --danger-tint:   #FFDCDC;
+  --success:       #1B7F4B;
+  --success-tint:  #D8F0E2;
+
+  --card-bg:       #FFFFFF;
+  --card-line:     #2B2B31;
+  --card-line-soft:#C6D0EF;
+  --shadow: 0 1px 0 rgba(0,0,0,.04);
+}
+
+/* ============================================================
+   THEME B — "spotlight" (Flipkart/Netflix style: near-black
+   ground, saturated red section bars, high-contrast stats)
+   Best for: consumer / D2C / media / bold-narrative cases.
+   ============================================================ */
+.theme-spotlight {
+  --bg:            #0A0A0C;
+  --ink:           #F2F2F4;
+  --ink-soft:      #C9C9D2;
+  --ink-mute:      #92929E;
+
+  --primary:       #E30913;
+  --primary-deep:  #8E060E;
+  --primary-tint:  #2A0C0E;
+  --primary-tint2: #191013;
+
+  --accent:        #FFD400;
+  --accent-ink:    #0A0A0C;
+
+  --dark:          #17171B;
+  --dark-ink:      #F2F2F4;
+
+  --danger:        #FF5A5F;
+  --danger-tint:   #3A1113;
+  --success:       #3FD07E;
+  --success-tint:  #0E2A1B;
+
+  --card-bg:       #131317;
+  --card-line:     #34343C;
+  --card-line-soft:#26262D;
+  --shadow: none;
+}
+
+/* ============================================================
+   THEME C — "accenture" (for the AIC submission — purple brand)
+   ============================================================ */
+.theme-accenture {
+  --bg:            #FFFFFF;
+  --ink:           #1B1B25;
+  --ink-soft:      #4A4A57;
+  --ink-mute:      #5F6070;
+
+  --primary:       #A100FF;
+  --primary-deep:  #460073;
+  --primary-tint:  #F4EAFF;
+  --primary-tint2: #FBF6FF;
+
+  --accent:        #FFC53D;   /* gold reads as a highlight against purple */
+  --accent-ink:    #3A2A00;
+
+  --dark:          #2E1046;
+  --dark-ink:      #FFFFFF;
+
+  --danger:        #C0245C;
+  --danger-tint:   #FBE4EC;
+  --success:       #0B7B5C;
+  --success-tint:  #DFF5EE;
+
+  --card-bg:       #FFFFFF;
+  --card-line:     #DCC7F5;
+  --card-line-soft:#EADCFA;
+  --shadow: 0 1px 2px rgba(70,0,115,.06);
+}
+
+/* ============================================================
+   THEME D — "forest" (calm analytical alternative)
+   ============================================================ */
+.theme-forest {
+  --bg:            #FFFFFF;
+  --ink:           #1E2A24;
+  --ink-soft:      #405147;
+  --ink-mute:      #647268;
+
+  --primary:       #176B4F;
+  --primary-deep:  #0C4632;
+  --primary-tint:  #DCEFE6;
+  --primary-tint2: #F1F9F5;
+
+  --accent:        #F2C14E;
+  --accent-ink:    #22200F;
+
+  --dark:          #22302A;
+  --dark-ink:      #FFFFFF;
+
+  --danger:        #B3402F;
+  --danger-tint:   #FBE3DE;
+  --success:       #176B4F;
+  --success-tint:  #DCEFE6;
+
+  --card-bg:       #FFFFFF;
+  --card-line:     #BFD7CB;
+  --card-line-soft:#D9E9E0;
+  --shadow: 0 1px 2px rgba(12,70,50,.06);
+}

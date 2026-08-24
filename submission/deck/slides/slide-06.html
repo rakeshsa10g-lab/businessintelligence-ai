@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>06 — Nothing ships unverified</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab active">Trust &amp; Access</div>
+    <div class="tab">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">06</span> Nothing ships unverified — the model never gets the last word</header>
+
+  <div class="body fill">
+
+    <div>
+      <div class="flow">
+        <div class="step"><div class="sh"><span class="i">1</span>Gate 1 · sufficiency</div><div class="sb">Evidence bundle frozen and hashed.</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="sh"><span class="i">2</span>Narration</div><div class="sb">Model writes into a typed schema.</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="sh"><span class="i">3</span>Gate 2</div><div class="sb">Ten deterministic checks.</div></div>
+        <div class="arrow">→</div>
+        <div class="step dark"><div class="sh"><span class="i">4</span>Pass, retry once, or template</div><div class="sb">Fail-closed to a verified fallback.</div></div>
+      </div>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="stat xl"><div class="n">0 / 10</div><div class="l">false acceptances across hand-built corrupt narratives</div></div>
+      <div class="stat xl"><div class="n">0 / 6</div><div class="l">false rejections across valid narratives</div></div>
+      <div class="stat xl"><div class="n">9 / 9</div><div class="l">injected violations caught by the expected check</div></div>
+      <div class="stat xl"><div class="n">0%</div><div class="l">verification failure rate, demonstration set</div></div>
+    </div>
+
+    <div class="grid split-31">
+      <div class="card strong" style="border-color:var(--danger)">
+        <div class="card-title" style="color:var(--danger)">The gate blocked our own fallback template</div>
+        <div class="t-body">During the final audit, a bug made the deterministic template cite two evidence ids the frozen bundle no longer held. Gate 2 rejected it. We had documented that template as "cannot fail by construction" — it was unfailable by <span class="em-dan">luck</span>. Both the builder and the docstring were corrected.</div>
+        <div class="t-small" style="font-style:italic;margin-top:2px">A gate that only ever passes what we produce is not a gate.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Caveat, stated</div>
+        <div class="t-small">None of <i>those</i> ten got through — not that none could.</div>
+      </div>
+    </div>
+
+    <div class="band outline sm">Causal language is <b>licensed</b>, not asserted — a DiD test with a parallel-trend check decides. On S3 the licence is <b>denied</b>; the UI says "association only". DiD licenses wording, not truth.</div>
+  </div>
+
+  <div class="footnote">Sources: Gate 2 check suite · eval/verification_report.md · eval/data_realism_audit.md</div>
+</section>
+
+</div>
+</body>
+</html>

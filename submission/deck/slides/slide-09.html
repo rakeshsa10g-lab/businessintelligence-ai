@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>09 — What we measured, and what we refuse to claim</title>
+<link rel="stylesheet" href="../design/tokens.css">
+<link rel="stylesheet" href="../design/layout.css">
+<link rel="stylesheet" href="../design/components.css">
+<style>
+  html, body { margin:0; padding:0; background:#fff; }
+  .deck { padding:0; gap:0; }
+</style>
+</head>
+<body class="theme-accenture">
+<div class="deck">
+
+<section class="slide">
+  <nav class="tabs">
+    <div class="tab">Problem</div>
+    <div class="tab">Solution</div>
+    <div class="tab">Trust &amp; Access</div>
+    <div class="tab active">Evidence &amp; Close</div>
+  </nav>
+  <header class="slide-title"><span class="num">09</span> What we measured, and what we refuse to claim</header>
+
+  <div class="body fill">
+
+    <div class="band outline sm">Every number carries a class: <b>[M]</b> measured · <b>[S]</b> synthetic evaluation · <b>[R]</b> research-sourced · <b>[A]</b> assumption · <b>[I]</b> illustrative</div>
+
+    <div class="grid split-32">
+      <table class="tbl compact">
+        <tr><th colspan="2">Measured on this system [M]</th></tr>
+        <tr><td>Automated tests passing</td><td class="rowhead" style="width:auto">574, 0 fail</td></tr>
+        <tr><td>Scenarios end to end</td><td>8 / 8</td></tr>
+        <tr><td>Graph vs direct-module agreement</td><td>8 / 8</td></tr>
+        <tr><td>LMDI identity closure</td><td>0.000000000%</td></tr>
+        <tr><td>Runtime per scenario</td><td>4–50 s</td></tr>
+        <tr><td>Restricted items reaching any stage</td><td>0</td></tr>
+      </table>
+      <table class="tbl compact">
+        <tr><th colspan="2">Synthetic evaluation [S] · seed 20260821, 6 injected events</th></tr>
+        <tr><td>Detection precision / recall</td><td>1.000 / 1.000</td></tr>
+        <tr><td><b>False positives, 48 clean slices</b></td><td><b>0</b></td></tr>
+        <tr><td>Ranking robustness</td><td>100% / 300</td></tr>
+        <tr><td>Dense recall@10</td><td>0.778</td></tr>
+        <tr><td>Calibration, HIGH band</td><td>12 of 12</td></tr>
+      </table>
+    </div>
+
+    <div class="card tint2 strong">
+      <div class="card-title">The result we are proudest of is a set of numbers that got worse</div>
+      <div class="t-small">A realism audit found the corpus held only 13 distinct texts across 895 records — retrieval was close to a lookup. Widened to 30: <b>every score fell</b>. BM25 p@5 0.810 → <b>0.552</b> · recall@10 0.957 → <b>0.654</b> · dense recall@10 0.933 → <b>0.778</b> · RRF MRR 0.964 → <b>0.838</b>. The lower numbers are the ones we report — and the first evidence the hybrid retriever earns its place.</div>
+    </div>
+
+    <div class="band dark">Searched for, and absent from the repository: customer savings · enterprise ROI · adoption numbers · market share · productivity gain · unqualified "accuracy" · "production-ready" · "real-time" · "autonomous" except as a negation</div>
+  </div>
+
+  <div class="footnote">Sources: eval/claim_audit.md · eval/data_realism_audit.md · R2_BUSINESS_PROPOSAL_SOURCE.md</div>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,369 @@
+/* ============================================================
+   COMPONENTS — the reusable blocks that make a dense
+   case-competition slide. Every one is lifted from a deck
+   that actually placed.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   CARD — the base container
+   ------------------------------------------------------------ */
+.card {
+  background: var(--card-bg);
+  border: var(--bw) solid var(--card-line-soft);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+  min-width: 0; min-height: 0;
+  box-shadow: var(--shadow);
+}
+.card.tint    { background: var(--primary-tint); border-color: var(--card-line-soft); }
+.card.tint2   { background: var(--primary-tint2); }
+.card.strong  { border: var(--bw-strong) solid var(--card-line); }
+.card.dark    { background: var(--dark); color: var(--dark-ink); border-color: var(--dark); }
+.card.flat    { border: 0; box-shadow: none; }
+.card.pad-lg  { padding: 14px 16px; }
+
+.card-title {
+  font-size: var(--fs-card-title);
+  font-weight: 800;
+  color: var(--primary-deep);
+  line-height: var(--lh-tight);
+}
+.card.dark .card-title { color: var(--accent); }
+.card-sub { font-size: var(--fs-caption); color: var(--ink-mute); font-weight: 600; }
+
+/* Card header as a filled strip (HiLabs "Step 1:" pattern) */
+.card-head {
+  margin: -10px -12px 4px;
+  padding: 6px 12px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  font-size: var(--fs-card-title);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.card-head.accent { background: var(--accent); color: var(--accent-ink); }
+.card-head.dark   { background: var(--dark); color: var(--dark-ink); }
+
+/* ------------------------------------------------------------
+   TEXT helpers
+   ------------------------------------------------------------ */
+.t-body  { font-size: var(--fs-body); color: var(--ink-soft); }
+.t-small { font-size: var(--fs-small); color: var(--ink-soft); }
+.t-cap   { font-size: var(--fs-caption); color: var(--ink-mute); }
+.t-ink   { color: var(--ink); }
+.b       { font-weight: 700; color: var(--ink); }
+.hl      { background: var(--accent); color: var(--accent-ink); padding: 0 3px; border-radius: 2px; font-weight: 700; }
+.em-pri  { color: var(--primary); font-weight: 700; }
+.em-dan  { color: var(--danger); font-weight: 700; }
+.em-suc  { color: var(--success); font-weight: 700; }
+.u       { text-decoration: underline; text-underline-offset: 2px; }
+
+/* bullet list, tight */
+ul.bul { margin: 0; padding-left: 15px; }
+ul.bul > li { margin-bottom: 4px; font-size: var(--fs-body); color: var(--ink-soft); }
+ul.bul > li::marker { color: var(--primary); }
+ul.bul.sm > li { font-size: var(--fs-small); margin-bottom: 3px; }
+ul.none { list-style: none; padding-left: 0; margin: 0; }
+
+/* source attribution line (HiLabs cites under every claim) */
+.src { font-size: var(--fs-source); color: var(--ink-mute); }
+.src a, .src .link { color: var(--primary); text-decoration: underline; }
+
+/* ------------------------------------------------------------
+   PILL / TAG / KICKER
+   ------------------------------------------------------------ */
+.pill {
+  display: inline-block; padding: 2px 9px; border-radius: var(--r-pill);
+  font-size: var(--fs-caption); font-weight: 700;
+  background: var(--primary-tint); color: var(--primary-deep);
+}
+.pill.accent { background: var(--accent); color: var(--accent-ink); }
+.pill.dark   { background: var(--dark); color: var(--dark-ink); }
+.pill.danger { background: var(--danger-tint); color: var(--danger); }
+.pill.ghost  { background: transparent; border: var(--bw) solid var(--card-line-soft); color: var(--ink-mute); }
+
+.kicker {
+  font-size: var(--fs-caption); font-weight: 800; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--primary-deep);
+}
+
+/* ------------------------------------------------------------
+   STAT CARD — big number over a label
+   ------------------------------------------------------------ */
+.stat {
+  background: var(--primary-tint);
+  border: var(--bw) solid var(--card-line-soft);
+  border-radius: var(--r-md);
+  padding: 8px 12px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+}
+.stat .n { font-size: var(--fs-stat-lg); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -1px; }
+.stat .l { font-size: var(--fs-small); color: var(--ink-soft); }
+.stat.xl .n { font-size: var(--fs-stat-xl); }
+.stat.on-dark { background: var(--dark); border-color: var(--dark); }
+.stat.on-dark .n { color: var(--accent); }
+.stat.on-dark .l { color: var(--dark-ink); }
+
+/* ------------------------------------------------------------
+   IMPACT ROW — dark plate w/ accent numeral + description
+   (the single most distinctive HiLabs block)
+   ------------------------------------------------------------ */
+.impact {
+  display: grid; grid-template-columns: 128px 1fr;
+  border: var(--bw-strong) solid var(--card-line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  min-height: 0;
+}
+.impact .plate {
+  background: var(--dark); color: var(--accent);
+  font-size: var(--fs-stat-md); font-weight: 800; letter-spacing: -.5px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px 4px; text-align: center; line-height: 1.05;
+}
+.impact .desc {
+  background: var(--primary-tint);
+  padding: 6px 10px; font-size: var(--fs-small); color: var(--ink);
+  display: flex; align-items: center;
+}
+.impact.narrow { grid-template-columns: 96px 1fr; }
+
+/* ------------------------------------------------------------
+   ICON ROW — illustration + claim + source
+   ------------------------------------------------------------ */
+.icon-row { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: start; }
+.icon-row .ico {
+  width: 44px; height: 44px; border-radius: var(--r-md);
+  background: var(--primary-tint); color: var(--primary-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21px; line-height: 1;
+}
+.icon-row .ico.circle { border-radius: 50%; }
+.icon-row .ico.accent { background: var(--accent); color: var(--accent-ink); }
+.icon-row .ico.dark   { background: var(--dark);   color: var(--accent); }
+.icon-row .ico.sm     { width: 30px; height: 30px; font-size: 15px; }
+.icon-row.sm { grid-template-columns: 30px 1fr; gap: 8px; }
+
+/* ------------------------------------------------------------
+   NUMBERED FLOW — steps connected by arrows
+   ------------------------------------------------------------ */
+.flow { display: flex; align-items: stretch; gap: 0; }
+.flow > .step { flex: 1 1 0; min-width: 0; }
+.flow > .arrow {
+  flex: 0 0 24px; display: flex; align-items: center; justify-content: center;
+  color: var(--primary); font-size: 17px; font-weight: 800;
+}
+.step {
+  background: var(--card-bg);
+  border: var(--bw) solid var(--card-line-soft);
+  border-radius: var(--r-md);
+  padding: 7px 9px;
+  display: flex; flex-direction: column; gap: 3px;
+}
+.step .sh { font-size: var(--fs-small); font-weight: 800; color: var(--primary-deep); line-height: var(--lh-tight); }
+.step .sh .i {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--primary); color: #fff; font-size: 10px; margin-right: 5px;
+}
+.step .sb { font-size: var(--fs-caption); color: var(--ink-soft); }
+.step.tint { background: var(--primary-tint); }
+.step.dark { background: var(--dark); border-color: var(--dark); }
+.step.dark .sh { color: var(--accent); } .step.dark .sb { color: var(--dark-ink); }
+
+/* CHEVRON process (HiLabs 1-2-3-4 header strip) */
+.chevrons { display: flex; gap: 6px; }
+.chev {
+  flex: 1 1 0; min-width: 0;
+  background: var(--primary); color: #fff;
+  padding: 7px 10px 7px 14px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%);
+  display: flex; align-items: center; gap: 8px;
+}
+.chev:first-child { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); }
+.chev .n { font-size: 22px; font-weight: 800; opacity: .85; line-height: 1; flex: 0 0 auto; }
+.chev .t { font-size: var(--fs-small); font-weight: 800; line-height: var(--lh-tight); min-width: 0; }
+.chev .t .s { display: block; font-size: var(--fs-caption); font-weight: 400; opacity: .92; margin-top: 2px; }
+
+/* ------------------------------------------------------------
+   PAIN → SOLUTION (HiLabs "Pain points→ / Solution→")
+   ------------------------------------------------------------ */
+.pain-sol { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+.pain-sol .lbl { font-size: var(--fs-small); font-weight: 800; color: var(--primary-deep); }
+.pain-sol .sol {
+  background: var(--dark); color: var(--dark-ink);
+  border-radius: var(--r-md); padding: 8px 10px;
+  font-size: var(--fs-small);
+}
+.pain-sol .sol .hl { background: var(--accent); color: var(--accent-ink); }
+
+/* ------------------------------------------------------------
+   TABLES — dense comparison + heat-shaded journey grid
+   ------------------------------------------------------------ */
+table.tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+table.tbl th {
+  background: var(--primary); color: #fff; font-weight: 700;
+  padding: 5px 8px; text-align: left; border: 1px solid var(--card-line-soft);
+}
+table.tbl td {
+  padding: 5px 8px; border: 1px solid var(--card-line-soft);
+  color: var(--ink-soft); vertical-align: top;
+}
+table.tbl tr:nth-child(even) td { background: var(--primary-tint2); }
+/* row headers must beat the zebra rule, so they come after it */
+table.tbl th.rowhead,
+table.tbl tr:nth-child(even) td.rowhead,
+table.tbl td.rowhead {
+  background: var(--primary-deep); color: #fff; font-weight: 700; width: 110px;
+}
+table.tbl.compact th, table.tbl.compact td { padding: 3px 6px; font-size: var(--fs-caption); }
+
+/* heat shading for scored cells */
+.h1 { background: color-mix(in srgb, var(--danger) 10%, transparent) !important; }
+.h2 { background: color-mix(in srgb, var(--danger) 22%, transparent) !important; }
+.h3 { background: color-mix(in srgb, var(--danger) 36%, transparent) !important; }
+.h4 { background: color-mix(in srgb, var(--danger) 52%, transparent) !important; }
+.h5 { background: color-mix(in srgb, var(--danger) 68%, transparent) !important; color: #fff !important; }
+
+/* ------------------------------------------------------------
+   PERSONA card
+   ------------------------------------------------------------ */
+.persona { display: grid; grid-template-columns: 52px 1fr; gap: 10px; }
+.persona .av {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--primary-tint); color: var(--primary-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800;
+}
+.persona .nm { font-size: var(--fs-card-title); font-weight: 800; color: var(--primary-deep); line-height: 1.1; }
+.persona .meta { font-size: var(--fs-caption); color: var(--ink-mute); }
+.persona .quote {
+  font-size: var(--fs-small); font-style: italic; color: var(--ink-soft);
+  border-left: 3px solid var(--primary); padding-left: 8px; margin-top: 4px;
+}
+
+/* ------------------------------------------------------------
+   QUOTE callout
+   ------------------------------------------------------------ */
+.quote-box {
+  background: var(--primary-tint2);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 8px 12px;
+}
+.quote-box .q { font-size: var(--fs-small); font-style: italic; color: var(--ink); }
+.quote-box .a { font-size: var(--fs-caption); color: var(--ink-mute); margin-top: 3px; }
+
+/* ------------------------------------------------------------
+   RISK / MITIGATION block
+   ------------------------------------------------------------ */
+.risk {
+  border: var(--bw) solid var(--card-line-soft);
+  border-radius: var(--r-md); overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.risk .r-head {
+  background: var(--danger-tint); color: var(--danger);
+  font-size: var(--fs-small); font-weight: 800; padding: 5px 9px;
+}
+.risk .r-body { padding: 6px 9px; font-size: var(--fs-caption); color: var(--ink-soft); }
+.risk .r-mit  { padding: 0 9px 7px; font-size: var(--fs-caption); color: var(--ink-soft); }
+.risk .r-mit b { color: var(--success); }
+
+/* ------------------------------------------------------------
+   CHART PRIMITIVES — pure CSS, no libraries
+   ------------------------------------------------------------ */
+
+/* vertical bar chart */
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 100%; padding-top: 14px; }
+.bars .bar { flex: 1 1 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; height: 100%; }
+.bars .bar .fill {
+  width: 100%; background: var(--primary); border-radius: var(--r-sm) var(--r-sm) 0 0;
+  position: relative;
+}
+.bars .bar .fill.alt { background: var(--primary-deep); }
+.bars .bar .fill.acc { background: var(--accent); }
+.bars .bar .v {
+  position: absolute; top: -15px; left: 0; right: 0; text-align: center;
+  font-size: var(--fs-caption); font-weight: 700; color: var(--ink);
+}
+.bars .bar .k { font-size: var(--fs-caption); color: var(--ink-mute); text-align: center; }
+
+/* horizontal bar / progress */
+.hbar { display: flex; align-items: center; gap: 8px; font-size: var(--fs-caption); }
+.hbar .track { flex: 1 1 auto; height: 12px; background: var(--primary-tint); border-radius: var(--r-pill); overflow: hidden; }
+.hbar .track > span { display: block; height: 100%; background: var(--primary); border-radius: var(--r-pill); }
+.hbar .lab { width: 108px; color: var(--ink-soft); }
+.hbar .val { width: 42px; text-align: right; font-weight: 700; color: var(--ink); }
+
+/* donut (conic-gradient) — set --p to a percentage */
+.donut {
+  width: 104px; height: 104px; border-radius: 50%;
+  background: conic-gradient(var(--primary) calc(var(--p) * 1%), var(--primary-tint) 0);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.donut::after {
+  content: ""; position: absolute; inset: 18px; border-radius: 50%; background: var(--card-bg);
+}
+.donut .c { position: relative; z-index: 1; font-size: var(--fs-card-title); font-weight: 800; color: var(--primary-deep); }
+
+/* funnel / metric pyramid (NSM → L1 → L2) */
+.funnel { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.funnel .lvl {
+  color: #fff; font-weight: 700; font-size: var(--fs-small);
+  padding: 6px 10px; text-align: center; border-radius: var(--r-sm);
+  background: var(--primary);
+}
+.funnel .lvl:nth-child(1) { width: 46%; background: var(--primary-deep); }
+.funnel .lvl:nth-child(2) { width: 72%; }
+.funnel .lvl:nth-child(3) { width: 100%; background: color-mix(in srgb, var(--primary) 72%, #fff); }
+
+/* 2x2 matrix (impact × probability, effort × value…) */
+.matrix { position: relative; aspect-ratio: 2 / 1; border-left: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft); }
+.matrix.tall { aspect-ratio: 1.4 / 1; }
+.matrix .qd {
+  position: absolute; width: 50%; height: 50%;
+  border: 1px dashed var(--card-line-soft);
+}
+.matrix .dot {
+  position: absolute; transform: translate(-50%, 50%);
+  background: var(--danger); color: #fff;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--fs-caption); font-weight: 800;
+}
+.matrix .ax-x, .matrix .ax-y { position: absolute; font-size: var(--fs-caption); color: var(--ink-mute); font-weight: 700; }
+.matrix .ax-x { bottom: -18px; right: 0; }
+.matrix .ax-y { top: -6px; left: -8px; writing-mode: vertical-rl; transform: rotate(180deg); }
+
+/* legend */
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: var(--fs-caption); color: var(--ink-mute); }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; background: var(--primary); }
+.legend i.alt { background: var(--primary-deep); }
+.legend i.acc { background: var(--accent); }
+
+/* driver tree / decomposition */
+.tree { display: flex; align-items: center; gap: 8px; font-size: var(--fs-small); }
+.tree .node {
+  background: var(--primary-tint); border: var(--bw) solid var(--card-line-soft);
+  border-radius: var(--r-md); padding: 6px 10px; font-weight: 700; color: var(--primary-deep);
+}
+.tree .node.root { background: var(--primary); color: #fff; border-color: var(--primary); }
+.tree .op { font-weight: 800; color: var(--ink-mute); }
+
+/* before / after */
+.ba { display: grid; grid-template-columns: 1fr 30px 1fr; align-items: stretch; gap: 0; }
+.ba .arrow { display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 19px; font-weight: 800; }
+.ba .before { border: var(--bw) solid var(--card-line-soft); border-radius: var(--r-md); padding: 9px 11px; }
+.ba .after  { border: var(--bw-strong) solid var(--primary); border-radius: var(--r-md); padding: 9px 11px; background: var(--primary-tint2); }
+
+/* device / product mock frame */
+.mock {
+  border: 3px solid var(--ink); border-radius: 12px; background: var(--card-bg);
+  padding: 6px; display: flex; flex-direction: column; gap: 4px; overflow: hidden;
+}
+.mock .bar { height: 7px; border-radius: 3px; background: var(--primary-tint); }
+.mock .bar.w60 { width: 60%; } .mock .bar.w40 { width: 40%; } .mock .bar.w80 { width: 80%; }
+.mock .bar.acc { background: var(--primary); }
