@@ -64,6 +64,10 @@ between the orchestrated graph and the direct-module path · 32 security tests �
 0 restricted items reaching any stage · LMDI identity closing to 0.000000000%
 residual.
 
+**Verified on a clean machine:** CI runs install → generate warehouse → build
+index → full suite → credential scan on `ubuntu-latest` / Python 3.13, with no
+API key set. **574 passed, 0 failed** in 5m 02s.
+
 Every figure in the submission carries an evidence class — measured, synthetic
 evaluation, research-sourced, assumption, or illustrative. No ROI, cost saving,
 adoption or production-accuracy claim appears anywhere in this repository;

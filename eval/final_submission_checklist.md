@@ -119,7 +119,7 @@ two real bugs found and fixed) is `eval/pitch_deck_visual_qa.md`.
 | Application starts | ✅ |
 | Demo scenarios run | ✅ 8/8, agreeing with the direct-module path |
 | Full tests pass | ✅ see final run |
-| CI workflow present | ✅ `.github/workflows/test.yml` — ⚠ never executed |
+| CI workflow present **and executed** | ✅ `.github/workflows/test.yml` — ran on a clean `ubuntu-latest` / Python 3.13 runner, **574 passed, 0 failed**, 10m 01s |
 | Deployment commands work | ✅ verified end to end |
 
 ---
@@ -129,10 +129,14 @@ two real bugs found and fixed) is `eval/pitch_deck_visual_qa.md`.
 | # | Item | Severity | Blocks submission? |
 |---|---|---|:---:|
 | 1 | Live LLM evaluation pending | Medium | No — template mode is honest and labelled |
-| 2 | CI never executed | Low | No |
-| 3 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
-| 4 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
-| 5 | Evidence count on the pitch-deck hero slide (8) differs from the business proposal's mockup (7) | Low | No — both are real counts from real runs; documented in `R2_PITCH_DECK_SOURCE.md` rather than silently reconciled |
+| 2 | Feedback loop unvalidated | Low | No — stated as implemented, not validated |
+| 3 | Corpus diversity still 3.4% | Low | No — documented in the realism audit |
+| 4 | Evidence count on the pitch-deck hero slide (8) differs from the business proposal's mockup (7) | Low | No — both are real counts from real runs; documented in `R2_PITCH_DECK_SOURCE.md` rather than silently reconciled |
+| 5 | Repository is **private** | Low | **Check the submission form.** Judges cannot open the link until it is made public or they are invited |
+
+**Closed since the last revision:** *CI never executed* — the repository was
+pushed to a remote and the workflow ran, passing 574/574 on a clean runner.
+`eval/prototype_readiness.md` area 8 moved LIGHTWEIGHT → REAL on that evidence.
 
 **No open item blocks submission.** All three deliverables — R2-DEL-1
 (Business Proposal), R2-DEL-2 (Working Prototype), R2-DEL-3 (Pitch

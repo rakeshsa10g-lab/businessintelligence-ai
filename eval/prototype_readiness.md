@@ -17,7 +17,7 @@ that can be defended in a question.
 | 5 | Databases / Storage | **REAL** | 3 separated stores, reproducible, checkpoint round-trip verified |
 | 6 | Auth / Permissions | **PARTIAL** | Authorisation real and tested end to end; **authentication absent** |
 | 7 | Hosting / Cloud | **LIGHTWEIGHT** | `streamlit run app.py`; no cloud, deliberately |
-| 8 | CI/CD / Version Control | **LIGHTWEIGHT** | GitHub Actions runs the suite; **repo was not under git until now** |
+| 8 | CI/CD / Version Control | **REAL** | GitHub Actions runs the suite; executed on a clean runner, 574/574 passing |
 | 9 | Security | **REAL** | 32 tests; 6-stage leak chain with a non-vacuity control |
 | 10 | Caching / CDN | **LIGHTWEIGHT** | Three caches, all correct; no CDN, none needed |
 | 11 | Error Tracking / Logs | **REAL** | 35 failure-injection tests; append-only audit log |
@@ -100,16 +100,50 @@ cloud, no reverse proxy.
 produced a repository that could not start. The documented path is now
 actually the path.
 
-## 8. CI/CD / Version Control — LIGHTWEIGHT
+## 8. CI/CD / Version Control — REAL
 
 `.github/workflows/test.yml`: install → generate warehouse → build index → run
 suite → check no credential is committed. Generating fixtures in CI doubles as
 the cheapest possible check that the documented setup still works.
 
 **Finding:** the repository was **not under version control at all** — no
-`.git` directory existed through twelve stages. Initialised in this stage with
+`.git` directory existed through twelve stages. Initialised in Stage 12 with
 a `.gitignore` covering the warehouse, checkpoints (including WAL/SHM), index
 and walkthrough output.
+
+**Upgraded from LIGHTWEIGHT after the workflow actually ran.** The repository
+was pushed to a remote and the workflow executed for the first time on commit
+`3ea18fe`: **all 574 tests passed on a clean `ubuntu-latest` / Python 3.13
+runner**, 10m 01s end to end.
+
+| Step | Time | Result |
+|---|---:|---|
+| `pip install -r requirements.txt` | 3m 11s | pass |
+| `python -m data.generate` | 11s | pass |
+| `python -m retrieval.build_index` | 25s | pass |
+| `pytest -p no:randomly` | 5m 06s | **574 passed, 0 failed** |
+| Credential scan | <1s | pass |
+
+Three things this verified that no local run could:
+
+1. **A clean-machine install works.** Every prior run used a Windows environment
+   accumulated across thirteen stages. This is the first evidence that
+   `requirements.txt` yields a working repository from nothing — the fix for the
+   four dependency blocks that were commented out while their imports were live
+   is now confirmed rather than assumed.
+2. **The documented setup path is the real path.** The generate → index → test
+   sequence ran end to end on a machine that had never seen this project.
+3. **The no-key path is genuinely green.** CI sets `ANTHROPIC_API_KEY: ""`, so
+   all 574 tests pass in the verified-template mode the prototype ships in.
+
+Incidental: the suite took **302s in CI versus ~785s locally**, which indicates
+the local slowness is environmental rather than inherent.
+
+**What is still not claimed.** One workflow on one runner is a control, not a
+release pipeline. There is no deployment automation, no matrix across Python
+versions or operating systems, no branch protection, and no scheduled run — so
+this is REAL in the sense that the check exists and executes, not in the sense
+that it is a production CI/CD practice.
 
 ## 9. Security — REAL
 
@@ -182,7 +216,7 @@ false.
 
 ---
 
-## Summary
+## Summary — as assessed at Stage 12
 
 | Verdict | Count | Areas |
 |---|---:|---|
@@ -194,6 +228,10 @@ false.
 Nothing is marked REAL that a judge could disprove in one question, and
 nothing is marked DEFERRED without a trigger that says when it would stop
 being acceptable.
+
+*Superseded twice below: Stage 13 re-assessed and changed nothing, then CI
+executed and moved area 8 to REAL. The current matrix is the last one in this
+file.*
 
 ---
 
@@ -217,6 +255,10 @@ covers install → generate → build index → test → secret scan. It has **n
 executed**, because the repository has no remote. A CI file that has not run is
 a plan, not a control, and upgrading it on the strength of its own existence is
 exactly what this matrix is supposed to prevent.
+
+> **Superseded after Stage 13** — see "Post-submission: CI executed" below. This
+> assessment was correct when written; the condition it named has since been
+> met, and the upgrade was made on evidence rather than on documentation.
 
 **12 — Monitoring: stays LIGHTWEIGHT.** Telemetry is captured per run and
 rendered in the Audit tab; nothing aggregates, retains or alerts. Writing
@@ -258,3 +300,67 @@ persona is a dropdown. No amount of documentation moves this.
 which is the correct outcome. Stage 13 was an audit stage; it found and fixed
 defects, and it did not add capability. A matrix that improved during an audit
 would be the suspicious result.
+
+---
+
+# Post-submission: CI executed
+
+The repository was pushed to a GitHub remote. This changed exactly one category,
+and it changed it because something *ran*, not because something was written.
+
+## The one upgrade
+
+**8 — CI/CD: LIGHTWEIGHT → REAL.** Stage 13 refused this upgrade and named the
+precise condition that would justify it: *"A CI file that has not run is a plan,
+not a control."* The workflow has now run. On commit `3ea18fe`, on a clean
+`ubuntu-latest` / Python 3.13 runner: **574 tests passed, 0 failed**, 10m 01s
+end to end, including a from-scratch dependency install, warehouse generation
+and index build. Detail in section 8 above.
+
+The upgrade is on the strength of an execution log, which is what the Stage 13
+note asked for.
+
+## Re-examined and still NOT upgraded
+
+**7 — Hosting/Cloud: stays LIGHTWEIGHT.** A GitHub remote is version control,
+not hosting. Nothing is deployed; the app still runs only as `streamlit run
+app.py` on one machine.
+
+**12 — Monitoring: stays LIGHTWEIGHT.** A CI run producing logs is not
+monitoring. Nothing aggregates, retains or alerts on production telemetry.
+
+**6 — Auth: stays PARTIAL.** Unchanged and unchangeable by this event.
+
+## A defect this exposed
+
+Pushing made `README.md` the repository landing page, which surfaced that it had
+not been touched since **Stage 2**. It claimed stages 3–13 were "Not started"
+and — more seriously — its run instructions **omitted `python -m
+retrieval.build_index`**, which produces a failing test run because
+`retrieval/embeddings.py` raises rather than degrading when the index is absent.
+
+Worth recording *why* the Stage 12/13 audits missed it: both verified the
+commands in `docs/DEPLOYMENT.md` and neither diffed them against the different,
+shorter set in the README. "Deployment commands work" was checked against one
+document, not against every document that claims to document deployment.
+
+## Final matrix
+
+| # | Area | Verdict |
+|---|---|:---:|
+| 1 | System Design | **REAL** |
+| 2 | System Architecture | **REAL** |
+| 3 | Frontend | **REAL** |
+| 4 | APIs / Backend Logic | **REAL** |
+| 5 | Databases / Storage | **REAL** |
+| 6 | Auth / Permissions | **PARTIAL** — authorisation real, authentication absent |
+| 7 | Hosting / Cloud | **LIGHTWEIGHT** |
+| 8 | CI/CD / Version Control | **REAL** — workflow executed, 574/574 on a clean runner |
+| 9 | Security | **REAL** |
+| 10 | Caching / CDN | **LIGHTWEIGHT** |
+| 11 | Error Tracking / Logs | **REAL** |
+| 12 | Monitoring / Alerts | **LIGHTWEIGHT** |
+| 13 | Testing | **REAL** |
+| 14 | Scaling | **DEFERRED** |
+
+**9 REAL · 1 PARTIAL · 3 LIGHTWEIGHT · 1 DEFERRED.**
