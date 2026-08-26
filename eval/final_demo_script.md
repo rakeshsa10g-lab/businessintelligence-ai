@@ -1,10 +1,24 @@
 # Three-minute demo script
 
-**One story, two scenarios.** S1 carries the whole arc; S2 exists to show the
-system refusing to guess. Everything else stays closed.
+**One story, two scenarios.** S1 carries the arc; S2 is the differentiator and
+it must land inside the first two minutes. Everything else stays closed.
 
 Do not demonstrate eight scenarios. Do not open the Method tab unless asked —
 its existence is worth more than its contents in three minutes.
+
+> **Restructured after the product/judge audit.** The previous cut reached the
+> conflicting-evidence moment at 2:15, which the audit found was too late: up to
+> that point the demo is legible as a competent BI copilot, and the one thing no
+> competitor does was arriving after the judge had already formed a category
+> judgement. S2 now starts at **1:30**, and the two beats that used to precede it
+> (evidence tour, reliability) are folded into the beats they belong to.
+
+**The one moment a judge should remember:**
+
+> **The system refuses to invent a root cause when the evidence conflicts.**
+
+Everything before it exists to make that refusal meaningful; everything after
+it exists to show the refusal is enforced rather than promised.
 
 ---
 
@@ -28,7 +42,7 @@ thirty seconds it costs.
 
 ---
 
-## Beat 1 — Detect (0:00–0:25)
+## Beat 1 — What moved? (0:00–0:20)
 
 **Show:** the top of the Workspace.
 
@@ -43,12 +57,17 @@ Net Revenue · West × Web/Mobile App
 > that's not a threshold on the percentage, it's a business rule with both a
 > statistical and a business leg. Most movements never get here."
 
+Point at the KPI chart directly beneath it.
+
+> "And that's the series itself, with the changepoint the detector found and the
+> window it compared. Nothing on this chart is drawn by a model."
+
 **Do not** explain STL, MAD or PELT. If asked: *"decomposition, robust z-score,
 changepoint detection — it's in the Method tab."*
 
 ---
 
-## Beat 2 — Attribute (0:25–0:55)
+## Beat 2 — Why? (0:20–0:45)
 
 **Show:** the driver chart.
 
@@ -67,41 +86,29 @@ over-100% share.
 
 ---
 
-## Beat 3 — Evidence (0:55–1:20)
+## Beat 3 — Evidence (0:45–1:10)
 
-**Show:** `7 supporting`. Click the **Evidence** tab briefly.
+**Show:** the evidence block — the count *and* the items beneath it.
 
-> "Seven documents corroborate — support tickets clustering in the affected
-> window, a gateway deployment on the 12th, cohort spikes. Note what none of
-> them says: no ticket says *'the payment gateway caused a revenue decline'*.
-> They're customer complaints — 'card declined', 'checkout spun forever'. The
-> cause is inferred by the pipeline, not read off a label."
+> "Eight documents corroborate, and the two most relevant are right here — I
+> don't have to take the count on trust. Support tickets clustering in the
+> affected window, a gateway deployment on the 12th.
+>
+> Note what none of them says: no ticket says *'the payment gateway caused a
+> revenue decline'*. They're customer complaints — 'card declined', 'checkout
+> spun forever'. The cause is inferred by the pipeline, not read off a label."
 
-Return to Workspace. **Twelve seconds maximum in the Evidence tab.**
+Then, without leaving the screen, point at the reliability block:
 
----
+> "And reliability is a track record, not a confidence score — correct in 12 of
+> 12 similar past cases, with the caveat that those cases are synthetic sitting
+> in the same block, not in a footnote."
 
-## Beat 4 — Explain and trust (1:20–1:50)
-
-**Show:** the reliability block.
-
-```
-High reliability
-Correct in 12 of 12 similar past cases.
-These cases come from a synthetic evaluation set, not from production history.
-```
-
-> "Not a confidence score — a track record. And the caveat is in the same
-> block, not a footnote: those twelve cases are synthetic. The system also
-> refuses to quote a rate for its medium and low bands, because it has fewer
-> than ten cases there. It says **uncalibrated** instead of guessing."
-
-**This is the trust beat.** Land the point that the system limits its own
-claims.
+**Do not** open the Evidence tab here. The default screen now carries enough.
 
 ---
 
-## Beat 5 — Recommend (1:50–2:15)
+## Beat 4 — Action (1:10–1:30)
 
 **Show:** the recommendation block and the button.
 
@@ -114,18 +121,36 @@ Then point at the button text:
 > "And read the button: **Raise the request**. Not 'roll back'. The persona has
 > request rights on this lever, not approval rights, so what gets automated is
 > raising the request. Rolling back is a different lever that no persona in
-> this system can approve and that's on a never-automate list."
+> this system can approve, and it's on a never-automate list."
 
 **This is the safety beat.** Scope separation is the thing enterprise buyers
 actually worry about.
 
 ---
 
-## Beat 6 — Stress the trust layer (2:15–2:50)
+## Beat 5 — Now introduce conflicting evidence (1:30–2:00)
 
 **Switch to S2 in the sidebar. Click Run.** (~14 s — talk through it.)
 
-> "Same engine, different event. South × Apparel, down 21.9%."
+> "That was the case where the evidence agreed. Here's the one where it doesn't.
+>
+> Same engine, different event. South × Apparel, down 21.9%."
+
+While it runs, set up the stake — do not wait for the screen to make the point:
+
+> "Two explanations come back equally supported: competitive pressure, and stock
+> availability. Every tool in this category will pick one and write you a
+> confident paragraph about it.
+>
+> Watch what this one does instead."
+
+**This is the setup, and it is the reason the demo is structured this way.**
+Everything before this beat is legible as a competent BI copilot. This is where
+that stops being the right category.
+
+---
+
+## Beat 6 — The system refuses to choose (2:00–2:30)
 
 **Show:** the review block.
 
@@ -139,8 +164,9 @@ Which is it: (competitive pressure on Apparel and South) or
 ```
 
 > "Two explanations, equally supported, and they imply **different owners** —
-> one is a pricing problem, one is a supply problem. The system doesn't pick.
-> It stops, states the question, and hands it to a person.
+> one is a pricing problem, one is a supply problem. Guessing doesn't just risk
+> a wrong answer; it sends the wrong team. So the system stops, states the
+> question, and hands it to a person.
 >
 > That's a real pause, not a message: the graph is interrupted on a durable
 > checkpoint. If I resume it, it's the same run with the same evidence hash —
@@ -151,21 +177,27 @@ Which is it: (competitive pressure on Apparel and South) or
 > it wanted to."
 
 **This is the beat that wins the room.** A system that declines is more
-credible than one that always answers.
+credible than one that always answers. Give it silence afterwards.
 
 ---
 
-## Beat 7 — Optional, only if time remains (2:50–3:00)
+## Beat 7 — Entitlement or audit trail (2:30–3:00)
 
 Pick **one**. Do not do both.
 
-**Option A — sparse history (S4):**
-> "New category, 52 days of history against the 56 a seasonal baseline needs.
-> It won't extrapolate. It tells you to wait four days."
+**Option A — entitlement (S6):**
+> "Same event as the first one, read by an ops lead. One CRM note is withheld —
+> and the system says so, with a count. A silently shorter list would be worse."
 
-**Option B — entitlement (S6):**
-> "Same event as before, read by an ops lead. One CRM note is withheld — and
-> the system says so, with a count. A silently shorter list would be worse."
+**Option B — audit trail (Audit tab):**
+> "Fifteen lineage records per run, accumulated during execution rather than
+> rebuilt at the end. Contract version, entitlement policy, detection method,
+> counterfactual result, retrieved document ids, bundle hash, model status."
+
+**Option C — sparse history (S4), if the room is technical:**
+> "New category, 52 days of history against the 56 a seasonal baseline needs.
+> It won't extrapolate. It tells you to wait four days — and the KPI chart
+> shows the series with nothing marked on it, because nothing was found."
 
 ---
 
@@ -173,13 +205,17 @@ Pick **one**. Do not do both.
 
 | Beat | Time | Point |
 |---|---|---|
-| 1 Detect | 0:25 | Material, not just moved |
-| 2 Attribute | 0:30 | Numbers are computed, and self-explaining |
-| 3 Evidence | 0:25 | Cause is inferred, not labelled |
-| 4 Explain | 0:30 | Track record, with its own caveat |
-| 5 Recommend | 0:25 | Bounded scope — request, not rollback |
-| 6 Refuse | 0:35 | It stops when it should |
-| 7 Optional | 0:10 | One abstention |
+| 1 What moved | 0:20 | Material, not just moved — and the series is shown |
+| 2 Why | 0:25 | Numbers are computed, and self-explaining |
+| 3 Evidence | 0:25 | Evidence is visible, not counted; reliability caveated inline |
+| 4 Action | 0:20 | Bounded scope — request, not rollback |
+| **5 Conflict** | **0:30** | **The setup: every competitor picks one** |
+| **6 Refuse** | **0:30** | **It stops when it should — the moment to remember** |
+| 7 Entitlement / audit | 0:30 | Access control visible, or the trail |
+
+**The differentiator now lands at 1:30 rather than 2:15.** That is the single
+structural change from the previous cut, and it exists because the first ninety
+seconds are otherwise indistinguishable from a competent BI copilot.
 
 ---
 
@@ -187,10 +223,15 @@ Pick **one**. Do not do both.
 
 **"How do I know the model isn't making this up?"** → Method tab.
 
-> "Ten deterministic checks against a frozen, hashed evidence bundle. Zero hard
-> violations. If any check fails, it retries once, then falls back to a
-> template that's itself verified. And the model never sees a database — the
-> request has no tools key at all."
+> "Ten deterministic checks against a frozen, hashed evidence bundle. Ten of
+> ten hand-built corrupted narratives were blocked; zero of six valid ones were
+> rejected. If any check fails, it retries once, then falls back to a template
+> that's itself verified. And the model never sees a database — the request has
+> no tools key at all.
+>
+> One honest boundary: that tests the **verification mechanism**. It is not a
+> measurement of live model reliability — no API key is configured here, so no
+> real generation has been observed."
 
 **"Can I see the audit trail?"** → Audit tab.
 

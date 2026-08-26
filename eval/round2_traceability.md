@@ -9,7 +9,7 @@ not evidence. Where something is partially met, the row says so and says what
 is missing — an honest ⚠ is more useful than a ✅ that does not survive a
 question.
 
-Evidence base: **571 tests passing, 0 failures** (13:05); 8 scenarios driven
+Evidence base: **574 tests passing, 0 failures**; 8 scenarios driven
 end to end through the real graph (`eval/graph_report.md`, 8/8 agreeing with
 the direct-module path).
 
@@ -215,7 +215,7 @@ calibration table is seeded from 64 synthetic cases, and `p_human` in
 | ID | Deliverable | Status |
 |---|---|:---:|
 | **R2-DEL-1** | Detailed Business Proposal | ⚠ **Not this repository's scope.** Technical evidence a proposal would cite is here (`eval/`, `docs/`); the proposal document itself is not written |
-| **R2-DEL-2** | Working Prototype | ✅ `streamlit run app.py`; 8 demoable scenarios; 571 tests |
+| **R2-DEL-2** | Working Prototype | ✅ `streamlit run app.py`; 8 demoable scenarios; 574 tests |
 | **R2-DEL-3** | Pitch Presentation | ⚠ **Not built.** Deferred to the final polish stage |
 
 ---

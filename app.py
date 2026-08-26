@@ -34,6 +34,7 @@ from ui.components import audit as audit_view  # noqa: E402
 from ui.components import confidence as confidence_view  # noqa: E402
 from ui.components import drivers as drivers_view  # noqa: E402
 from ui.components import evidence as evidence_view  # noqa: E402
+from ui.components import kpi_series as kpi_series_view  # noqa: E402
 from ui.components import hypotheses as hypotheses_view  # noqa: E402
 from ui.components import method as method_view  # noqa: E402
 from ui.components import movement as movement_view  # noqa: E402
@@ -120,11 +121,21 @@ def workspace_tab(result, scenario) -> None:
         movement_view.render(result, scenario.slice_label)
         st.markdown("")
         abstention_view.render(result)
+        # The series renders *below* the abstention, never above it, so the
+        # refusal keeps the top of the screen. Unannotated: no changepoint
+        # marker, no shaded window, and a caption saying why. On S7 this is
+        # the point — the reader sees the +5.9% jump and sees that the system
+        # looked at it and declined to call it an event.
+        with safe.panel("kpi series"):
+            kpi_series_view.render(result)
         return
 
     with safe.panel("movement"):
         movement_view.render(result, scenario.slice_label)
         movement_view.render_answer_line(result)
+
+    with safe.panel("kpi series"):
+        kpi_series_view.render(result)
 
     st.markdown('<div class="bi-sec">Why did it move?</div>',
                 unsafe_allow_html=True)

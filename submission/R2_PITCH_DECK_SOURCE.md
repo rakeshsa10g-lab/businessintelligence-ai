@@ -149,7 +149,7 @@ one upgrade, and it is listed separately as such.
 | Gate 2 false acceptance: **0 of 10** corrupt narratives | **[S]** | `eval/verification_report.md` — proposal source §3 |
 | Gate 2 false rejection: **0 of 6** valid narratives | **[S]** | same |
 | Injected violations caught by the expected check: **9 / 9** | **[S]** | same |
-| Verification failure rate **0%** across the demonstration set | **[M]** | `eval/graph_report.md` — proposal source §2 |
+| Injected corruption classes rejected: **3 / 3** (numeric, driver, causal) | **[M]** | `eval/final_evaluation_report.md` §4. **Replaces a previous "0% verification failure rate" claim**, which measured the deterministic template path — no live model generation has been observed |
 | Ten deterministic checks against a frozen, hashed bundle | **[M]** | `verification/engine.py`; proposal §6.4 |
 | "None of *those* got through — not that none could" | — | Stated caveat, `eval/claim_audit.md` §5 |
 | **Gate 2 blocked our own deterministic template** | **[M]** | Stage 13; `eval/data_realism_audit.md`, `eval/claim_audit.md` correction #2 — proposal source §2 |
@@ -162,7 +162,7 @@ one upgrade, and it is listed separately as such.
 
 | Claim | Class | Source |
 |---|:---:|---|
-| Automation / review / abstention = **50% / 25% / 25%** (4 / 2 / 2 of 8) | **[M]** | `eval/graph_report.md` — proposal source §2 |
+| Automated / review / abstained = **4 / 2 / 2 of 8 scenarios** | **[M]** | `eval/graph_report.md` — proposal source §2. Stated as counts over the **synthetic demonstration set**, which was built to exercise every terminal state. **Not production workload rates**, and the qualifier is on the slide, not only here |
 | "These describe the demonstration set… a production mix would be dominated by no material event" | — | Stated caveat, proposal §10 |
 | **S2** — South × Apparel, **−21.9%**, two explanations implying different owners | **[S]** | See §13 — proposal §9 |
 | **S4** — **52 of the 56 days** a seasonal baseline needs | **[S]** | See §13 — proposal §9, `eval/detection_report.md` |
@@ -211,11 +211,12 @@ one upgrade, and it is listed separately as such.
 
 | Claim | Value | Stated limitation carried onto the slide |
 |---|---:|---|
-| Detection precision / recall | 1.000 / 1.000 | Over *injected* events, built to be detectable by this method's assumptions |
+| **False positives, 48 clean slices** | **0** | **The headline** — not guaranteed by construction |
+| Injected-event recall | 1.000 | Over *injected* events, built to be detectable by this method's assumptions. Reported second, never led with |
 | False positives, 48 clean slices | **0** | **The meaningful figure** — not guaranteed by construction |
 | Ranking robustness | 100% of 300 resamples | Resampling the same series, not out-of-sample |
 | Dense recall@10 | 0.778 | Post-realism-audit |
-| RRF MRR | 0.838 | Best MRR of the three |
+| RRF recall@10 | 0.697 | **Between** BM25 (0.654) and dense (0.778) — fusion did not beat dense |
 | Calibration HIGH | 12 of 12 | Synthetic; MEDIUM/LOW report `UNCALIBRATED` |
 
 ### The retrieval regression
@@ -228,7 +229,7 @@ one upgrade, and it is listed separately as such.
 | BM25 recall@10 **0.957 → 0.654** | **[S]** | same |
 | Dense recall@10 **0.933 → 0.778** | **[S]** | same |
 | RRF MRR **0.964 → 0.838** | **[S]** | same |
-| Dense beats BM25 on recall@10 by **19% relative** | **[S]** | See §13 — `eval/claim_audit.md` Stage 13. Arithmetic check: 0.778 / 0.654 = 1.190 |
+| Dense beats BM25 on recall@10 by **19% relative** | **[S]** | Arithmetic check: 0.778 / 0.654 = 1.190. Justifies **dense**, not fusion — RRF recall@10 0.697 sits between the two |
 
 ### Not claimed — from proposal source §6
 

@@ -72,7 +72,7 @@ The verification report's "0 false acceptance" now carries a caveat: none of
 |---|---|---|
 | Graph overhead 13–40 ms (0.08–0.78% on real work) | `MEASURED` | `eval/graph_report.md`; one machine, warm caches |
 | S1 end-to-end ~49 s | `MEASURED` | Includes a ~35 s cold model load, reported unadjusted |
-| 571 tests, 785 s | `MEASURED` | Full suite |
+| 574 tests | `MEASURED` | Full suite; also verified on a clean CI runner |
 | Concurrency / scale behaviour | **Not claimed** | Single-process prototype; untested |
 
 ## 7. Security
@@ -138,7 +138,7 @@ numbers**. Every affected claim is restated here rather than silently updated.
 | BM25 recall@10 | 0.957 | **0.654** | `SYNTHETIC_EVALUATION` |
 | Dense recall@10 | 0.933 | **0.778** | `SYNTHETIC_EVALUATION` |
 | RRF MRR | 0.964 | **0.838** | `SYNTHETIC_EVALUATION` |
-| "Hybrid did not beat BM25 on this corpus" | true, and conceded | **superseded** — dense now beats BM25 on recall@10 by 19% relative | `SYNTHETIC_EVALUATION` |
+| "Hybrid did not beat BM25 on this corpus" | true, and conceded | **partly superseded, and re-corrected.** Dense beats BM25 on recall@10 by 19% relative — that justifies *dense*, not fusion. RRF recall@10 (0.697) sits **between** BM25 (0.654) and dense (0.778), so hybrid still does not beat the best single method. An intermediate revision of the deck overstated this as "the hybrid retriever earns its place"; corrected | `SYNTHETIC_EVALUATION` |
 | Detection precision/recall | 1.000 / 1.000 | **unchanged** | `SYNTHETIC_EVALUATION` |
 | Corpus size | 1,341 documents | **1,336** | `MEASURED` |
 

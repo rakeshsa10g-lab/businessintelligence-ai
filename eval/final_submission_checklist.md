@@ -60,7 +60,7 @@ python -m data.generate && python -m retrieval.build_index
 streamlit run app.py
 ```
 
-8 demoable scenarios · 573 tests · CI workflow · clean git tree · reproducible
+8 demoable scenarios · 574 tests · CI workflow · clean git tree · reproducible
 fixtures · no secrets.
 
 ### R2-DEL-1 — Business Proposal: complete
@@ -118,9 +118,33 @@ two real bugs found and fixed) is `eval/pitch_deck_visual_qa.md`.
 | Requirements install cleanly | ✅ **fixed in Stage 12** — four blocks were commented out while their imports were live |
 | Application starts | ✅ |
 | Demo scenarios run | ✅ 8/8, agreeing with the direct-module path |
-| Full tests pass | ✅ see final run |
+| Full tests pass | ✅ **574 collected, 574 passed, 0 failed**, exit 0 — re-run after the transmission pass |
 | CI workflow present **and executed** | ✅ `.github/workflows/test.yml` — ran on a clean `ubuntu-latest` / Python 3.13 runner, **574 passed, 0 failed**, 10m 01s |
 | Deployment commands work | ✅ verified end to end |
+
+---
+
+### Transmission pass — final verification
+
+Run after the Stage 13 transmission corrections (`eval/final_transmission_audit.md`).
+
+| Check | Result |
+|---|---|
+| Full test suite | **574 collected · 574 passed · 0 failed** · exit 0 · no flaky tests |
+| Deck re-rendered | 11 slides → 11-page PDF |
+| All 11 slides inspected as images | Yes — no clipping, no dead-space regression, no stale numbers, no generic-AI visual language |
+| All 8 scenarios | **8 / 8** render |
+| S1 | KPI series, driver claim, colour legend, slice, **real evidence items**, recommendation — all present |
+| S2 | Review state present; both hypotheses named; **0 automate actions** |
+| S3 | Uncertainty / review behaviour present |
+| S4 | Sparse-history abstention; **0 material-movement chips**; series unannotated |
+| S5a / S5b | Persona variation confirmed — S5a renders as Priya, S5b as Arjun |
+| S6 | Withholding communicated (3 notices). Only CRM reference is the audit lineage `denied_sources` — the policy decision, **not** withheld content |
+| S7 | **0** material chip · **0** changepoint annotation · **0** recommendation · **0** root-cause claim · honest no-event caption present |
+
+**S7 is the load-bearing check.** A KPI chart that annotated a changepoint on a
+schema-rename artefact would assert an event the system explicitly declined to
+call. Annotations are gated on `DetectionOutcome`, not on field availability.
 
 ---
 

@@ -14,19 +14,31 @@ limitation — because a number without those three is not evidence.
 
 ## 1. Detection
 
+**The headline result, stated first because it is the one not guaranteed by
+construction:**
+
+> **The detector produced no false positives across the 48 evaluated clean
+> slices** in the seeded synthetic evaluation.
+
+That is the meaningful half. The recall figure below is reported second and
+deliberately not led with, because the events it recalls are events this
+repository injected.
+
 | Metric | Value | Dataset | Method | Limitation |
 |---|---:|---|---|---|
-| Precision | **1.000** | 64 slices, 16 injected events | `eval/run_detection_eval.py` | Precision over *injected* events |
-| Recall | **1.000** | same | same | Recall of 1.000 means every injected event was found — the injected events were constructed to be detectable by this method's own assumptions |
-| False positives | **0** | same | same | The 64-slice universe is the generated one |
-| False negatives | **0** | same | same | |
+| **False positives** | **0** | 48 clean slices of a 64-slice universe | `eval/run_detection_eval.py` | The 64-slice universe is the generated one. Within it, nothing made the detector fire spuriously |
+| Injected-event recall | 1.000 | 64 slices, 16 injected events | same | **Methodology limit:** the injected events were constructed to be detectable by this method's own assumptions, so a recall of 1.000 measures internal consistency, not detection skill on real movements |
+| Injected-event precision | 1.000 | same | same | Precision over *injected* events |
+| False negatives | **0** | same | same | Same construction limit as recall |
 
 **Pipeline:** coverage gate → STL → robust MAD z-score → PELT → materiality.
 
-**Limitation that matters most:** this is the single most overstate-able number
-in the project. A real corpus contains movement classes the generator never
-produced. What the figure does support: the pipeline does not fire on the 48
-slices with no injected event, which is the harder half.
+**Limitation that matters most:** 1.000/1.000 is the single most
+overstate-able pair of numbers in the project, which is why this section no
+longer leads with them. A real corpus contains movement classes the generator
+never produced. What the evaluation does support is the zero-false-positive
+result on the 48 clean slices — the harder half, and the half a generator
+cannot rig in the detector's favour.
 
 ## 2. Attribution
 
@@ -42,25 +54,56 @@ fixed by ADR-018.
 
 ## 3. Retrieval
 
+**Held-out eval split (14 queries) — the authoritative figures.**
+
 | Method | precision@5 | p@5 of achievable | recall@10 | MRR | hard negatives in top 5 |
 |---|---:|---:|---:|---:|---:|
-| BM25 | 0.810 | 0.971 | 0.957 | 0.964 | 0 |
-| Dense | 0.781 | 0.943 | 0.933 | 0.929 | 0 |
-| **RRF (hybrid)** | 0.795 | 0.957 | **0.957** | **0.964** | 0 |
+| BM25 | 0.552 | 0.693 | 0.654 | 0.833 | 2 |
+| **Dense** | **0.567** | **0.700** | **0.778** | 0.817 | 3 |
+| RRF (hybrid) | 0.552 | 0.693 | 0.697 | **0.838** | 2 |
 
-**Dataset:** 1,341 documents, `BAAI/bge-small-en-v1.5`, corpus hash
-`a36a851…`. **Method:** `eval/run_retrieval_eval.py` against a generated
-relevance benchmark.
+**Dataset:** 1,336 documents, `BAAI/bge-small-en-v1.5`, corpus hash
+`25ca24b4…`. **Method:** `eval/run_retrieval_eval.py` against a generated
+relevance benchmark, 21 queries split 7 dev / 14 held-out eval.
 
-**The honest finding, kept rather than buried:** hybrid retrieval did **not**
-beat BM25 on this corpus. It matches on recall@10 and MRR and is slightly
-behind on precision@5. Both retrievers are kept because BM25 cannot match
-paraphrase and dense cannot match rare exact tokens (`PG-TIMEOUT-504`), and a
-real ticket stream has both. The claim is *"hybrid is insurance we can
-afford"*, not *"hybrid improved our numbers"*.
+**These figures supersede an earlier, easier set** (BM25 p@5 0.810, recall@10
+0.957; RRF MRR 0.964) measured when the corpus held only 13 distinct document
+texts across 895 records. The realism audit widened it to 30 distinct texts,
+and **every score fell**. The lower numbers are the reported ones.
+
+**What the current evaluation supports:**
+
+1. **Corpus realism removed a lexical shortcut.** When almost every document
+   was one of thirteen templates, keyword matching was close to a lookup. It
+   is not any more, and the drop is the evidence of that.
+2. **Dense retrieval became the stronger single method under paraphrase** —
+   recall@10 **0.778 vs 0.654** for BM25, a 19% relative gain on the held-out
+   split. This is the first measurement in the project that justifies carrying
+   an embedding model at all.
+
+**What it does *not* support, stated because an earlier draft of this report
+and of the pitch deck implied it:**
+
+- **Not** "RRF beats BM25" as a general claim. RRF leads on MRR by 0.005
+  (0.838 vs 0.833), which is noise at 14 queries, and it *ties* BM25 on
+  precision@5.
+- **Not** "hybrid beats dense". It does not: RRF recall@10 of **0.697 sits
+  between** BM25's 0.654 and dense's 0.778. On this corpus, fusing a weaker
+  retriever into a stronger one moved the result toward the weaker one.
+
+**Therefore the defensible position on hybrid retrieval:** it remains
+implemented as a **robustness mechanism**, not as a measured improvement.
+BM25 cannot match paraphrase; dense cannot reliably match rare exact tokens
+(`PG-TIMEOUT-504`), and it carries more hard negatives here (3 vs 2). A real
+ticket stream contains both failure modes. The claim is *"hybrid is insurance
+we can afford"* — the same claim as before the corpus change, now with the
+added and honest caveat that **this evaluation does not prove RRF is superior
+to dense retrieval**, and a single-retriever dense configuration would be a
+legitimate thing for a pilot to test.
 
 **Limitation:** relevance labels come from a generated benchmark, not human
-judgement of usefulness.
+judgement of usefulness. The 14-query held-out split is small enough that
+differences under ~0.05 should not be treated as real.
 
 ## 4. Verification (Gate 2)
 
@@ -131,15 +174,33 @@ Full detail in `eval/final_telemetry_report.md`.
 
 | Measured | Value |
 |---|---:|
-| Automation rate | 50% (4/8) |
-| Review rate | 25% (2/8) |
-| Abstention rate | 25% (2/8) |
+| Automated | **4 of 8** scenarios |
+| Routed to human review | **2 of 8** |
+| Abstained | **2 of 8** |
 | Template fallback rate | 100% of narrated runs |
-| Verification failure rate | 0% |
 | Retry count | 0 |
 
-Rates describe **the demo scenario set**, which was built to hit every
-terminal. A production mix would be dominated by `NO_MATERIAL_EVENT`.
+**These are counts over the 8 synthetic demonstration scenarios, not rates.**
+The set was constructed to hit every terminal state at least once, so the
+4/2/2 split is a property of the test design, not a workload measurement. A
+production mix would be dominated by `NO_MATERIAL_EVENT`. Expressing them as
+"50% / 25% / 25%" without that qualifier attached invites reading them as
+production behaviour, so the counts are given first and the percentages only
+appear alongside the words *of the demonstration set*.
+
+**On "verification failure rate": deliberately removed from this table.**
+The prior revision reported **0%**, which was arithmetically true and
+substantively misleading. Every narrated run in this environment took the
+deterministic template path, because no `ANTHROPIC_API_KEY` is configured — so
+the figure measured the template's agreement with the gate, not a model's.
+Presenting it as a headline reliability metric implied that live LLM output
+had been observed passing verification. It has not.
+
+What is genuinely measured about the gate is in §4: **10 of 10 corrupted
+narratives blocked, 0 of 6 valid narratives wrongly rejected, 9/9 injected
+violations caught by the expected check.** Those are properties of the
+*verification mechanism*. They are not evidence about *live model
+reliability*, and the two must not be conflated.
 
 ## 10. LLM
 
@@ -159,7 +220,7 @@ estimate with `--plan` without sending anything.
 
 | | |
 |---|---:|
-| Tests | **571 passed, 0 failed** |
+| Tests | **574 passed, 0 failed** |
 | Runtime | 785 s (13:05) |
 | Flaky | **0** — two intermittent failures diagnosed to DuckDB single-writer contention |
 

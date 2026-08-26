@@ -39,17 +39,19 @@
       </table>
       <table class="tbl compact">
         <tr><th colspan="2">Synthetic evaluation [S] · seed 20260821, 6 injected events</th></tr>
-        <tr><td>Detection precision / recall</td><td>1.000 / 1.000</td></tr>
-        <tr><td><b>False positives, 48 clean slices</b></td><td><b>0</b></td></tr>
+        <tr><td class="rowhead" style="width:auto"><b>False positives, 48 clean slices</b></td><td class="rowhead"><b>0</b></td></tr>
+        <tr><td>Injected-event recall <span class="t-cap">(events built to be detectable by this method)</span></td><td>1.000</td></tr>
+        <tr><td>Gate 2 — corrupted narratives blocked</td><td><b>10 / 10</b></td></tr>
+        <tr><td>Gate 2 — valid narratives wrongly blocked</td><td>0 / 6</td></tr>
         <tr><td>Ranking robustness</td><td>100% / 300</td></tr>
-        <tr><td>Dense recall@10</td><td>0.778</td></tr>
+        <tr><td>Retrieval — dense recall@10 <span class="t-cap">(best of three)</span></td><td>0.778</td></tr>
         <tr><td>Calibration, HIGH band</td><td>12 of 12</td></tr>
       </table>
     </div>
 
     <div class="card tint2 strong">
       <div class="card-title">The result we are proudest of is a set of numbers that got worse</div>
-      <div class="t-small">A realism audit found the corpus held only 13 distinct texts across 895 records — retrieval was close to a lookup. Widened to 30: <b>every score fell</b>. BM25 p@5 0.810 → <b>0.552</b> · recall@10 0.957 → <b>0.654</b> · dense recall@10 0.933 → <b>0.778</b> · RRF MRR 0.964 → <b>0.838</b>. The lower numbers are the ones we report — and the first evidence the hybrid retriever earns its place.</div>
+      <div class="t-small">A realism audit found the corpus held only 13 distinct texts across 895 records — retrieval was close to a lookup. Widened to 30 and <b>every score fell</b>: BM25 recall@10 0.957 → <b>0.654</b>, dense 0.933 → <b>0.778</b>. The lower numbers are the ones we report. What they support: <b>corpus realism removed the lexical shortcut, and dense retrieval became the stronger method under paraphrase</b> (0.778 vs 0.654 recall@10). What they do <span class="em-dan">not</span> support: that fusion beats dense — RRF recall@10 is <b>0.697</b>, between the two. Hybrid stays as a robustness mechanism, not as a measured win.</div>
     </div>
 
     <div class="band dark">Searched for, and absent from the repository: customer savings · enterprise ROI · adoption numbers · market share · productivity gain · unqualified "accuracy" · "production-ready" · "real-time" · "autonomous" except as a negation</div>

@@ -1,6 +1,6 @@
 # Test strategy
 
-**571 tests · 571 passed · 0 failed · 785 s (13:05)** — full suite,
+**574 tests · 574 passed · 0 failed** — full suite,
 `python -m pytest -p no:randomly`.
 
 ---
@@ -18,7 +18,7 @@
 | **UI / application** | `test_ui` | 38 | Rendering, vocabulary, honesty of the template-mode label |
 | **Evaluation** | `test_data` | 20 | Dataset reproducibility and the scenario manifest |
 
-Counts are `def test_` counts; the collected total (571) is higher because of
+Counts are `def test_` counts; the collected total (574) is higher because of
 `@pytest.mark.parametrize` expansion.
 
 ---

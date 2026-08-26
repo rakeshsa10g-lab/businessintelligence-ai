@@ -142,7 +142,22 @@ If the default behaviour of a capable model is to answer confidently, then abste
 |---|---|---|---|---|
 | Is it real, and does it matter? | What drove it, and where? | What does the evidence support? | What should happen, and who acts? | Can every claim be checked? |
 
-**Row 2 — split-21: the actual screen | what is in it**
+**Row 2 — the actual screen, as two adjacent panels**
+
+The live capture is 1400×3118 — a tall portrait screen. An earlier build fitted
+it with `object-fit: cover`, which cropped away the driver chart, the evidence
+count, the reliability block and the action button: precisely the evidence the
+slide exists to show. `contain` would fit all of it at ~22% scale, unreadable
+from a projector. So the untouched capture is split at a section boundary and
+shown as two panels side by side — nothing redrawn, nothing rescaled
+non-uniformly, both halves at natural aspect ratio.
+
+**Row 3 — two cards: one screen one decision | and when evidence conflicts**
+
+The right-hand card carries the abstention teaser forward from Slide 05. The
+product/judge audit found the differentiator arrived too late to stop a judge
+filing this under "BI copilot"; a one-line pointer on the solution slide fixes
+that without spending a slide on it.
 
 *The default view — real rendered output, S1*
 
@@ -267,9 +282,9 @@ An exact identity decomposition closes to **0.000000000%** residual, so a share 
 
 **Row 2 — what Gate 2 measured (4 stat cards)**
 
-| 0 of 10 | 0 of 6 | 9 / 9 | 0% |
+| 0 of 10 | 0 of 6 | 9 / 9 | 3 / 3 |
 |---|---|---|---|
-| false acceptances across hand-built corrupt narratives | false rejections across valid narratives | injected violations caught by the expected check | verification failure rate across the demonstration set |
+| false acceptances across hand-built corrupt narratives | false rejections across valid narratives | injected violations caught by the expected check | injected corruption classes rejected — numeric, driver, causal |
 
 *Caveat carried on the slide:* none of **those** ten got through. That is not the same as saying none could.
 
@@ -301,11 +316,11 @@ builder and the docstring were corrected.
 
 **Row 1 — the outcome split (3 stat cards, dark plate)**
 
-| 50% | 25% | **25%** |
+| 4 of 8 | 2 of 8 | **2 of 8** |
 |---|---|---|
-| automated — 4 of 8 scenarios | routed to a human — 2 of 8 | **declined — 2 of 8** |
+| automated *(50% of the demo set)* | routed to a human *(25%)* | **declined *(25%)*** |
 
-*These describe the demonstration set, which was built to exercise every terminal. A production mix would be dominated by "no material event."*
+**Kicker rendered above the cards, in danger red, not in speaker notes:** *"Across the 8 synthetic demonstration scenarios — a set built to exercise every terminal state. These are NOT production workload rates."* A production mix would be dominated by "no material event." The counts lead and the percentages are parenthetical, because a bare "50%" invites reading a test-design property as a workload measurement.
 
 **Row 2 — three ways it stops, three different reasons (cols-3)**
 
@@ -402,11 +417,11 @@ Every number in this deck carries a class: **[M]** measured on this system · **
 
 | | |
 |---|---:|
-| Detection precision / recall | 1.000 / 1.000 |
 | **False positives on 48 clean slices** | **0** |
+| Injected-event recall *(events built to be detectable by this method)* | 1.000 |
 | Ranking robustness | 100% of 300 resamples |
 | Retrieval — dense recall@10 | 0.778 |
-| Retrieval — RRF MRR | 0.838 |
+| Retrieval — RRF recall@10 *(between BM25 and dense)* | 0.697 |
 | Calibration, HIGH band | 12 of 12 |
 
 **The honest reading of 1.000/1.000:** recall of 1.000 means every event *we
@@ -425,10 +440,13 @@ A realism audit found the document corpus held only **13 distinct texts** across
 | BM25 recall@10 | 0.957 | **0.654** |
 | Dense recall@10 | 0.933 | **0.778** |
 | RRF MRR | 0.964 | **0.838** |
+| RRF recall@10 | 0.957 | **0.697** — *between* BM25 and dense |
 
 Every score fell. **The lower numbers are the ones we report** — and they are the
-first measured evidence that the hybrid retriever earns its place, because dense
-recall now beats BM25 by 19% relative where before it did not.
+first measured evidence that **dense retrieval** earns its place, because dense
+recall now beats BM25 by 19% relative where before it did not. It is **not**
+evidence that fusion helps: RRF recall@10 is 0.697, *between* the two. Hybrid
+stays as a robustness mechanism, not as a measured win.
 
 **Row 4 — searched for, and absent from the entire repository (band, dark)**
 

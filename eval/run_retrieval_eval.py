@@ -401,14 +401,24 @@ def write_report(bench, rows, sweep, index, corpus_size) -> None:
              "(`\"card keeps getting rejected\"` against `\"gateway "
              "declines\"`) barely exists in a templated corpus.")
     L.append("")
+    # This paragraph asserted that "RRF matches the best single retriever on
+    # recall@10 and MRR". That was true of the pre-realism corpus and is false
+    # of the current one: dense reaches 0.778 recall@10 and RRF only 0.697.
+    # The report is generated, so the correction belongs here rather than in
+    # the .md, which is overwritten on every run.
     L.append("Both retrievers are kept anyway, for two reasons that are about "
              "the real corpus rather than this one. BM25 cannot match "
              "paraphrase and dense cannot match rare exact tokens "
              "(`PG-TIMEOUT-504`, `SKU-4471`); a production ticket stream has "
-             "both. And RRF matches the best single retriever on recall@10 "
-             "and MRR here, so keeping it costs nothing measurable. The "
-             "honest claim is *\"hybrid is insurance we can afford\"*, not "
-             "*\"hybrid improved our numbers\"* - on this corpus it did not.")
+             "both. But note what fusion did **not** buy on this corpus: RRF "
+             "sits *between* BM25 and dense on recall@10 rather than matching "
+             "the better of the two, so blending a weaker retriever into a "
+             "stronger one moved the result toward the weaker one. Its MRR "
+             "lead over BM25 is 0.005, which is noise at this query count. "
+             "The honest claim is *\"hybrid is insurance we can afford\"*, "
+             "not *\"hybrid improved our numbers\"* - on this corpus it did "
+             "not, and a dense-only configuration is a legitimate thing for a "
+             "pilot to test.")
     L.append("")
     L.append("The RRF k sweep is flat for the same reason: when the two "
              "ranked lists nearly agree, the fusion constant has nothing to "

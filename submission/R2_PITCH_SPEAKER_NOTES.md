@@ -118,7 +118,8 @@ Show the screen. Let it sit for two seconds before speaking.
 > whole movement** — one hundred and nine point nine percent — because sessions
 > actually rose and partly offset it.
 >
-> Seven documents corroborate. Reliability is a track record, not a score, and
+> Eight documents corroborate, and two of them are on the screen — the count is
+> not asked to be taken on trust. Reliability is a track record, not a score, and
 > the caveat that those cases are synthetic is in the same block, not a
 > footnote. And the action names an owner, a monitoring metric and a review
 > window."
@@ -128,6 +129,15 @@ Then the framing line:
 > "There is no chat box, and that is deliberate. A conversational surface invites
 > the user to ask the model questions it must not answer, from data it must not
 > reach."
+
+**Then point at the red card on the right — do not skip this even under time
+pressure.** It is the earliest moment a judge can tell this is not a BI copilot,
+and the product/judge audit found the pitch was previously waiting until Slide 05
+to say it.
+
+> "And one thing to hold on to before we go further: this screen is what you get
+> when the evidence agrees. When it doesn't, you don't get this screen at all.
+> I'll show you that in two minutes."
 
 ---
 
@@ -323,7 +333,7 @@ Close on the band:
 > point eight one to zero point five five.
 >
 > The lower numbers are the ones we report. And they are the first measured
-> evidence that the hybrid retriever earns its place, because dense retrieval
+> evidence that dense retrieval earns its place, because dense retrieval
 > now beats keyword search on recall where before it did not."
 
 Point at the bottom band, do not read it.
@@ -422,7 +432,7 @@ If a live demo runs, these slides are redundant with it. Do not show both.
 |---|:---:|---|
 | 1 · Detect | **03** (top) | Material movement, both legs of the gate |
 | 2 · Attribute | **05** | 109.9%, computed not narrated |
-| 3 · Evidence | **03** (middle) | 7 supporting; cause inferred, not labelled |
+| 3 · Evidence | **03** (right panel) | the supporting count and real evidence items; cause inferred, not labelled |
 | 4 · Explain and trust | **06**, **07** (calibration) | Track record with its caveat inline; `UNCALIBRATED` |
 | 5 · Recommend | **08** (scope band) | Raise the request, not roll back |
 | 6 · Stress the trust layer | **07** | Two owners, real interrupt, same bundle hash |

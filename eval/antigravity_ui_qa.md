@@ -66,6 +66,7 @@ Each scenario was executed in the live browser and evaluated against the five co
   * **Amber (`#8a5a1f`):** `RECOMMENDATION` / `CAUTION`
   * **Green (`#2f6f4e`):** Supporting Evidence / High Reliability
   * **Red (`#a33a3a`):** Strictly reserved for `CONTRADICTS` evidence chips and hard verification failures.
+    > **Corrected after the product/judge audit.** This was false at the time it was written: `ui/components/drivers.py` also paints negative contribution bars red, which the S1 hero screenshot shows plainly. The rule is now the broader and accurate one — **red = adverse** (negative contribution, or evidence arguing against the hypothesis). See `eval/growth_design_ux_mapping.md`. Left in place rather than rewritten, because what this QA pass actually checked is part of the record.
 * **Driver Visualization:** Zero-anchored horizontal bars correctly represent contribution shares. For S1 (109.9% conversion rate), offsetting negative factors are explicitly drawn and annotated.
 * **Abstention Screens:** S4 and S7 render visibly quieter surfaces (no noisy charts or fake action blocks).
 
@@ -139,7 +140,7 @@ Each scenario was executed in the live browser and evaluated against the five co
 | Principle | Implemented Mechanism | Live Product Verification |
 |---|---|:---:|
 | **Absent Uncertainty Markers** | Inline qualifiers on all reliability figures | **YES.** `HIGH RELIABILITY` paired with `Correct in 12 of 12 similar past cases (synthetic set)`. |
-| **Colour Discipline** | Restrained palette; red reserved for contradiction | **YES.** Red only used for `CONTRADICTS` chips and hard verification failures. |
+| **Colour Discipline** | Restrained palette; red reserved for contradiction | **YES at the time — since corrected.** This pass concluded red was used *only* for `CONTRADICTS` chips and hard verification failures. It missed the driver chart, which paints negative bars red. The rule is now **red = adverse**; see the note above and `eval/growth_design_ux_mapping.md`. |
 | **Proportional Scale** | Zero-anchored driver axis representing actual share | **YES.** Offset effects over 100% are explicitly visualized and annotated. |
 | **Recognition over Recollection** | Level 1 movement headline dominates visual hierarchy | **YES.** `↓ 25.0%` is the single largest element on the page. |
 | **Actionability Gap** | Every state names a concrete next step | **YES.** Findings offer buttons; abstentions name wait times or missing sources. |

@@ -241,7 +241,7 @@ Beside or beneath the stack, a two-column **CAN / CANNOT** box — this is the p
 **Content — Synthetic evaluation [S], seed 20260821, 6 injected events, ground truth known by construction:**
 - Detection precision/recall: **1.000 / 1.000** — state the honest reading inline: recall of 1.000 means every event *injected* was found, and those events were built to be detectable by this method's own assumptions. The figure that is *not* guaranteed by construction — and therefore the meaningful one — is:
 - **0 false positives across 48 clean slices.**
-- Retrieval: dense recall@10 **0.778**, BM25 recall@10 **0.654** — dense now measurably beats BM25, which is the first evidence the hybrid retriever earns its place, after a realism audit widened the document corpus and every retrieval score *fell* (report this direction explicitly — a lower, more honest number is the point, not a weakness to hide).
+- Retrieval: dense recall@10 **0.778**, BM25 recall@10 **0.654** — dense now measurably beats BM25 (the first evidence that **dense retrieval** earns its place — **not** that fusion does: RRF recall@10 is 0.697, *between* the two), after a realism audit widened the document corpus and every retrieval score *fell* (report this direction explicitly — a lower, more honest number is the point, not a weakness to hide).
 - Verification: **0 of 10** false acceptances on hand-built corrupt narratives; **0 of 6** false rejections on valid ones.
 - Outcome split across the 8 demonstration scenarios: **50% automated · 25% routed to a human · 25% declined.** State plainly that this mix describes a demonstration set built to exercise every terminal state, not a production traffic distribution.
 

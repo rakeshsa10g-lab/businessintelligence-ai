@@ -56,7 +56,7 @@ defence of the choice.
 | Review rate | **25%** (2/8) | S2, S3 |
 | Abstention rate | **25%** (2/8) | S4 (sparse), S7 (no material event) |
 | Template fallback rate | **100%** of narrated runs (4/4) | no API key configured |
-| Verification failure rate | **0%** | every delivered narrative passed Gate 2 |
+| Verification failure rate | **0%** ⚠ | every delivered narrative passed Gate 2 — **but every one took the deterministic template path** (no API key). This measures the template's agreement with the gate, not a model's. Not quoted in any submission-facing material; see `eval/final_evaluation_report.md` §9 |
 | Retry count | **0** | no model ran, so no retry was spent |
 
 The scenario set is deliberately balanced to exercise every terminal, so these
@@ -82,7 +82,7 @@ model reviewed the text.
 
 | | |
 |---|---:|
-| Tests | **571 passed, 0 failed** |
+| Tests | **574 passed, 0 failed** |
 | Runtime | **785 s (13:05)** |
 | Slowest single test | 18.7 s (`test_security_chain` module fixture) |
 

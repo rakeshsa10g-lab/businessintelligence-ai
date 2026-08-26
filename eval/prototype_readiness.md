@@ -22,7 +22,7 @@ that can be defended in a question.
 | 10 | Caching / CDN | **LIGHTWEIGHT** | Three caches, all correct; no CDN, none needed |
 | 11 | Error Tracking / Logs | **REAL** | 35 failure-injection tests; append-only audit log |
 | 12 | Monitoring / Alerts | **LIGHTWEIGHT** | Per-run telemetry; **no alerting, no retention** |
-| 13 | Testing | **REAL** | 571 tests, 0 failures, 8 classes |
+| 13 | Testing | **REAL** | 574 tests, 0 failures, 8 classes |
 | 14 | Scaling | **DEFERRED** | Documented with triggers; nothing implemented |
 
 ---

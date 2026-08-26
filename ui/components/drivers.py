@@ -60,6 +60,17 @@ def driver_rows(result: RunResult) -> list[dict]:
 def _figure(rows: list[dict], unit: str = "INR") -> go.Figure:
     names = [r["name"] for r in rows][::-1]
     values = [r["value"] for r in rows][::-1]
+    # One semantic across the whole product: red is *adverse* — a factor that
+    # pushed the KPI down here, a document that argues against the leading
+    # hypothesis in the evidence panel. Green is *favourable* — a factor that
+    # pushed the KPI up, or a document that corroborates.
+    #
+    # The UX mapping previously claimed red was reserved for contradicting
+    # evidence alone, which this chart had always contradicted: S1 renders a
+    # large red bar for conversion rate. The mapping was corrected rather than
+    # the chart recoloured, because red-means-down is the stronger mental model
+    # in a revenue chart and fighting it would cost more comprehension than the
+    # narrower reservation was worth. See eval/growth_design_ux_mapping.md.
     colours = [theme.CONTRA if v < 0 else theme.SUPPORT for v in values]
 
     fig = go.Figure(
@@ -138,6 +149,18 @@ def render(result: RunResult) -> None:
 
     st.plotly_chart(_figure(visible), width='stretch',
                     config={"displayModeBar": False})
+
+    # States the colour rule at the point of use rather than leaving the reader
+    # to infer it — and keeps the UI and the UX mapping saying the same thing.
+    st.markdown(
+        f'<div style="font-size:.78rem;color:{theme.INK_FAINT};'
+        f'margin-top:-.3rem;">'
+        f'<span style="color:{theme.CONTRA};font-weight:650;">Red</span>'
+        f' pushed {("the KPI")} down &middot; '
+        f'<span style="color:{theme.SUPPORT};font-weight:650;">green</span>'
+        f' pushed it up.</div>',
+        unsafe_allow_html=True,
+    )
 
     if len(rows) > DEFAULT_VISIBLE:
         hidden = len(rows) - DEFAULT_VISIBLE

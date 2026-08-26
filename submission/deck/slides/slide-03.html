@@ -9,14 +9,29 @@
 <style>
   html, body { margin:0; padding:0; background:#fff; }
   .deck { padding:0; gap:0; }
+  /* The live capture is 1400x3118 — a tall portrait screen in a landscape
+     frame. `object-fit: cover` cropped away the driver chart, the evidence
+     count, the reliability block and the action button, i.e. exactly the
+     evidence the slide exists to show. `contain` would fit all of it at ~22%
+     scale, which is unreadable at presentation size.
+     So the real screenshot is shown as two adjacent panels, split at a
+     section boundary. Nothing is redrawn, nothing is rescaled non-uniformly:
+     each panel is the untouched capture at its natural aspect ratio. */
+  .shot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); min-height: 0; }
   .shot-frame {
     border: var(--bw-strong) solid var(--card-line);
-    border-radius: var(--r-lg);
+    border-radius: var(--r-md);
     overflow: hidden;
-    height: 100%;
     box-shadow: var(--shadow);
+    background: #fff;
+    display: flex;
+    min-height: 0;
   }
-  .shot-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .shot-frame img {
+    width: 100%; height: 100%;
+    object-fit: contain; object-position: top center;
+    display: block;
+  }
 </style>
 </head>
 <body class="theme-accenture">
@@ -41,23 +56,27 @@
       <div class="chev"><div class="n">5</div><div class="t">VERIFY<span class="s">Can every claim be checked?</span></div></div>
     </div>
 
-    <div class="grid split-21 grow" style="min-height:0;">
+    <div class="kicker" style="margin-bottom:2px">Real rendered output — S1, Workspace tab. What changed → why → evidence → how reliable → what to do, in the order a business user asks.</div>
+
+    <div class="shot-pair grow">
       <div class="shot-frame">
-        <img src="../assets/hero_s1_workspace.png" alt="The actual running Streamlit workspace: net revenue down 25.0%, material movement, conversion rate the largest contributor at 109.9%">
+        <img src="../assets/hero_s1_top.png" alt="Live Streamlit workspace, upper panel: Net Revenue West x Web/Mobile App down 25.0%, flagged MATERIAL MOVEMENT, conversion rate the largest contributor at 109.9% with the driver chart">
       </div>
-      <div class="card tint" style="justify-content:flex-start;gap:8px">
-        <div class="card-title">Real rendered output — S1, Workspace tab</div>
-        <ul class="bul sm">
-          <li><span class="b">What changed?</span> The movement is the largest thing on the page — West × Web/Mobile, −25.0%, flagged material.</li>
-          <li><span class="b">Why?</span> Ranked drivers, arithmetic explained rather than hidden.</li>
-          <li><span class="b">Evidence?</span> 8 supporting documents, one click away.</li>
-          <li><span class="b">How reliable?</span> A track record with its caveat inline, never a footnote.</li>
-          <li><span class="b">What do I do?</span> Escalate to Engineering, owner named, a bounded button: "Raise the request".</li>
-        </ul>
+      <div class="shot-frame">
+        <img src="../assets/hero_s1_bottom.png" alt="Live Streamlit workspace, lower panel: evidence count, High reliability with its synthetic-evaluation caveat inline, the recommendation with owner and monitoring metric, and the Raise the request button">
       </div>
     </div>
 
-    <div class="band outline sm">A decision workspace, not a chatbot — no chat box, by design. A conversational surface invites questions the model must not answer, from data it must not reach.</div>
+    <div class="grid cols-2">
+      <div class="card tint">
+        <div class="card-title">One screen, one decision</div>
+        <div class="t-small">No chat box, by design. A conversational surface invites questions the model must not answer, from data it must not reach.</div>
+      </div>
+      <div class="card strong" style="border-color:var(--danger)">
+        <div class="card-title" style="color:var(--danger)">…and when the evidence conflicts, this screen does not appear at all</div>
+        <div class="t-small">On S2 two explanations are equally supported and imply <b>different owners</b>. The system stops and asks a person instead of picking. <span class="em-dan">Slide 05.</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="footnote">Internally the system runs Detect → Attribute → Retrieve → Verify → Recommend. The user never sees that order — it appears only in the Method tab.</div>

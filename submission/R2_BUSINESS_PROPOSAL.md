@@ -377,6 +377,18 @@ Three of the five end in the system **not** producing a recommendation. A demo b
 
 Measured after a realism audit widened the corpus. Earlier, easier numbers (BM25 p@5 0.810) are not reported as current.
 
+**The honest reading, on recall@10 — the decision-relevant metric here, because
+the bundle builder takes the top-k rather than only the first hit.** Dense
+(0.778) outperforms BM25 (0.654) by 19% relative: corpus realism removed the
+lexical shortcut, and embeddings became the stronger single method under
+paraphrase. **RRF (0.697) sits between the two**, so fusion did *not* beat
+dense on this corpus. RRF's MRR lead over BM25 is 0.005, which is noise at 14
+queries. Hybrid retrieval is therefore retained as a **robustness mechanism** —
+BM25 catches rare exact tokens (`PG-TIMEOUT-504`) that embeddings miss, dense
+catches paraphrase that keywords miss — and **not** as a measured improvement.
+A single-retriever dense configuration is a legitimate thing for a pilot to
+test.
+
 ### Verification **[S]**
 
 | Metric | Value |
@@ -399,14 +411,21 @@ Measured after a realism audit widened the corpus. Earlier, easier numbers (BM25
 
 | | |
 |---|---:|
-| Automation rate | 50% (4/8) |
-| Review rate | 25% (2/8) |
-| **Abstention rate** | **25% (2/8)** |
-| Verification failure rate | 0% |
+| Automated | **4 of 8** scenarios (50% of the demo set) |
+| Routed to human review | **2 of 8** (25%) |
+| **Abstained** | **2 of 8** (25%) |
+| Gate 2 — corrupted narratives blocked | **10 / 10** |
 | Runtime | 4–50 s per scenario |
 | Orchestration overhead | 13–42 ms (0.08–0.80%) |
 
-These rates describe *the demonstration set*, which was built to exercise every terminal. A production mix would be dominated by "no material event".
+These are **counts over the 8 synthetic demonstration scenarios**, which were built to exercise every terminal state — a property of the test design, not a workload measurement. A production mix would be dominated by "no material event".
+
+**A "verification failure rate" of 0% previously appeared in this table and has
+been removed.** It was arithmetically true and substantively misleading: every
+narrated run in this environment took the deterministic template path, because
+no API key is configured, so the figure measured the template's agreement with
+the gate rather than a model's. What is genuinely measured is the row above —
+**verification mechanism tested ≠ live LLM reliability measured.**
 
 ### What is not measured
 

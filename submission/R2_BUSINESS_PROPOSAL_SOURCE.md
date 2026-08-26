@@ -50,8 +50,8 @@ None is presented as a result of this system.
 | Lineage records per run | 15 | `eval/final_telemetry_report.md` |
 | Runtime per scenario | 4–50 s | `eval/final_telemetry_report.md` |
 | Orchestration overhead | 13–42 ms (0.08–0.80%) | `eval/final_telemetry_report.md` |
-| Automation / review / abstention | 50% / 25% / 25% | `eval/graph_report.md` |
-| Verification failure rate | 0% | `eval/graph_report.md` |
+| Automated / review / abstained | **4 / 2 / 2 of 8** demonstration scenarios | `eval/graph_report.md` — counts over the synthetic demo set, which was built to exercise every terminal. **Not production rates** |
+| Gate 2 — corrupted narratives blocked | **10 / 10** | `eval/final_evaluation_report.md` §4. A previous "0% verification failure rate" row was removed: it measured the deterministic template path, not live model output |
 | No `tools` key in narration request | asserted | `test_the_client_never_offers_tools` |
 | No routing predicate reads model output | asserted **against source** | `test_no_routing_predicate_reads_a_narrative` |
 | Gate 2 blocked our own template | occurred | Stage 13; `eval/data_realism_audit.md` |
@@ -72,8 +72,8 @@ None is presented as a result of this system.
 | Detection false positives | 0 of 48 clean slices | same | **The meaningful figure** — not guaranteed by construction |
 | Ranking robustness | 100% of 300 resamples | `eval/attribution_report.md` | Resampling the same series, not out-of-sample |
 | Retrieval BM25 p@5 / recall@10 | 0.552 / 0.654 | `eval/retrieval_report.md` | Post-realism-audit |
-| Retrieval dense recall@10 | 0.778 | same | Beats BM25 — first measured justification for hybrid |
-| Retrieval RRF MRR | 0.838 | same | Best MRR of the three |
+| Retrieval dense recall@10 | 0.778 | same | Beats BM25 (0.654) — first measured justification for carrying an **embedding model**. Not a justification for *fusion*: see the RRF row below |
+| Retrieval RRF recall@10 | 0.697 | same | **Between** BM25 (0.654) and dense (0.778) — fusion did not beat dense. RRF's MRR (0.838) leads BM25's (0.833) by 0.005, which is noise at 14 queries and is **not** reported as a win |
 | Gate 2 false acceptance | 0 of 10 | `eval/verification_report.md` | None of *those* got through — not that none could |
 | Gate 2 false rejection | 0 of 6 | same | |
 | Injected violations caught | 9 / 9 | same | |
@@ -138,7 +138,7 @@ Recorded because self-correction is part of the evidence:
 | # | Original claim | Correction |
 |---|---|---|
 | 1 | Detection 1.000/1.000 with **no** provenance marker | Banner added naming dataset and the injected-event limitation |
-| 2 | "Hybrid retrieval is insurance we can afford" | Superseded — dense now beats BM25 on recall@10 after the realism audit |
+| 2 | "Hybrid retrieval is insurance we can afford" | **Re-confirmed, after an intermediate revision wrongly marked it superseded.** Dense now beats BM25 on recall@10 (0.778 vs 0.654) — but RRF (0.697) sits *between* the two, so fusion still does not beat the best single method. "Insurance" remains the accurate framing; "hybrid earns its place" did not, and was corrected |
 | 3 | "No names, emails, addresses" in the dataset | `fact_orders.customer_email` exists — 91,329 synthetic `@example.com` values, RFC 2606 reserved, in no KPI `column_map` |
 | 4 | "The deterministic template cannot fail by construction" | It failed Gate 2 on S2. It was unfailable by *luck*. Fixed and restated |
 | 5 | Audit log `run_id` correlates reads to a run | It did not — one id per *process*. Fixed to a `ContextVar` bound to the graph run |

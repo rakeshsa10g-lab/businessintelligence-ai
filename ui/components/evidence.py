@@ -33,8 +33,28 @@ def counts(result: RunResult) -> tuple[int, int, int]:
     )
 
 
+# How many evidence items the default screen shows before deferring to the
+# Evidence tab. Two supporting is enough to make the evidence concrete without
+# turning Level 1 into a document dump; one contradicting is shown whenever one
+# exists, because a single dissenting document changes a decision more than a
+# third confirming one does.
+SUMMARY_SUPPORTING = 2
+SUMMARY_CONTRADICTING = 1
+
+
 def render_summary(result: RunResult) -> None:
-    """The one-line evidence posture, for the default screen."""
+    """The evidence posture for the default screen: counts, then real items.
+
+    Counts alone were the finding of the product/judge audit: the default
+    screen said "8 supporting" and showed none of them, so a reader had to
+    take the corroboration on trust — from a product whose entire argument is
+    that it does not ask to be taken on trust. The counts stay, because the
+    *number* is what makes the claim falsifiable, but a representative item or
+    two now renders beside them so the evidence is visibly real.
+
+    The full set stays one click away in the Evidence tab; this is a preview,
+    not a relocation of that panel.
+    """
     support, contra, withheld = counts(result)
     if support == 0 and contra == 0:
         st.markdown(
@@ -55,6 +75,38 @@ def render_summary(result: RunResult) -> None:
     )
     if withheld:
         render_withheld_notice(result)
+
+    render_summary_items(result)
+
+
+def render_summary_items(result: RunResult) -> None:
+    """Up to three real evidence items, contradicting first."""
+    bundle = result.bundle
+    if bundle is None:
+        return
+
+    supporting = list(bundle.supporting_evidence or ())
+    contradicting = list(bundle.contradicting_evidence or ())
+
+    # Contradicting leads. It is rarer, it is the harder thing for a system to
+    # surface about its own conclusion, and it is the item most likely to
+    # change what the reader does next.
+    shown = [(i, "contradicting") for i in contradicting[:SUMMARY_CONTRADICTING]]
+    shown += [(i, "supporting") for i in supporting[:SUMMARY_SUPPORTING]]
+    if not shown:
+        return
+
+    cards = "".join(_item_card(item, stance) for item, stance in shown)
+    st.markdown(cards, unsafe_allow_html=True)
+
+    remaining = (len(supporting) + len(contradicting)) - len(shown)
+    if remaining > 0:
+        st.markdown(
+            f'<div style="font-size:.8rem;color:{theme.INK_FAINT};'
+            f'margin-top:.35rem;">{remaining} further item'
+            f'{"s" if remaining != 1 else ""} in the Evidence tab.</div>',
+            unsafe_allow_html=True,
+        )
 
 
 def render_withheld_notice(result: RunResult) -> None:
