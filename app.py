@@ -100,13 +100,21 @@ def sidebar() -> tuple:
 
 
 def masthead(scenario, persona_id: str) -> None:
+    """Brand left, live analyst context right.
+
+    Every value here is read from the current selection — nothing about the
+    persona, role or scenario is hardcoded, so the bar always describes the run
+    the reader is actually looking at.
+    """
     role = ui_state.personas()[persona_id][0].replace("_", " ").title()
     st.markdown(
         f"""
         <div class="bi-mast">
           <div class="bi-brand">◆ BusinessIntelligence.ai</div>
-          <div class="bi-ctx">{persona_id.title()} · {role} &nbsp;|&nbsp;
-               {scenario.id}</div>
+          <div class="bi-ctx">
+            <span class="bi-ctx-tag">Analyst context</span>
+            <span>{persona_id.title()} · {role} &nbsp;·&nbsp; {scenario.id}</span>
+          </div>
         </div>
         """,
         unsafe_allow_html=True,

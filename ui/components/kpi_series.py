@@ -147,9 +147,7 @@ def render(result: RunResult, *, unit: str = "INR") -> None:
             dates, observed, trend,
             window=window, changepoints=changepoints,
             material=material, unit=unit,
-        ),
-        width="stretch",
-        config={"displayModeBar": False},
+        )
     )
 
     if material and changepoints:

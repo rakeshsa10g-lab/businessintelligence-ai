@@ -39,3 +39,4 @@ data/embedding_index/
 .claude/
 .pytest_cache/
 .streamlit/secrets.toml
+scripts/_ui_shots/

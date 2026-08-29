@@ -18,13 +18,26 @@ from __future__ import annotations
 
 # --------------------------------------------------------------------------
 # palette — deliberately small
+#
+# The neutrals below were retuned against a Stitch visual reference (a light
+# grey page carrying a centred white worksheet). **The semantic colours were
+# deliberately NOT retuned.** The reference proposes a brighter red (#dc2626)
+# and green (#16a34a); adopting them would make red louder, which is precisely
+# what the COVID-dashboard reasoning in this file's docstring argues against.
+# Surfaces and spacing carry the visual change; meaning-bearing colour does not
+# move.
 # --------------------------------------------------------------------------
 INK = "#12161f"
 INK_SOFT = "#4a5568"
 INK_FAINT = "#8b95a5"
-RULE = "#e2e6ec"
+RULE = "#e4e4e7"
 CANVAS = "#ffffff"
-CANVAS_SOFT = "#f7f8fa"
+CANVAS_SOFT = "#fafafa"
+
+#: The page behind the worksheet. A worksheet needs a desk to sit on.
+PAGE = "#f5f5f7"
+#: Hairline used inside cards, one step lighter than RULE.
+RULE_SOFT = "#eeeef1"
 
 #: The single accent. Used for the primary action and nothing else.
 ACCENT = "#1f4788"
@@ -48,53 +61,99 @@ CLASS_COLOURS = {
 }
 
 
+#: Font stacks. Inter and JetBrains Mono are named first so the reference
+#: typefaces are used where a machine has them, and the stack falls back to
+#: system faces otherwise. Nothing is fetched from a remote host: a decision
+#: workspace that renders differently depending on whether a CDN answered is
+#: worse than one that renders in Segoe UI every time.
+SANS = ('Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, '
+        'sans-serif')
+MONO = ('"JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, '
+        'Consolas, monospace')
+
+#: One elevation, used sparingly. The worksheet lifts off the page; nothing
+#: else does.
+SHADOW_CARD = "0 1px 2px rgba(18,22,31,.04), 0 8px 32px -12px rgba(18,22,31,.10)"
+
+
 def css() -> str:
     """Global stylesheet. Injected once per session."""
     return f"""
 <style>
   /* ---- reset Streamlit's defaults toward a document, not an app ---- */
   #MainMenu, footer, header {{ visibility: hidden; }}
+
+  /* The page is a desk; the block container is a worksheet resting on it. */
+  .stApp {{ background:{PAGE}; }}
   .block-container {{
-      padding-top: 2.2rem; padding-bottom: 4rem;
-      max-width: 1080px;
+      max-width: 900px;
+      padding: 2.2rem 3rem 3.5rem 3rem;
+      background:{CANVAS};
+      border:1px solid {RULE};
+      border-radius:16px;
+      box-shadow:{SHADOW_CARD};
+      margin-top:1.4rem; margin-bottom:2.5rem;
   }}
   html, body, [class*="css"] {{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter,
-                   system-ui, sans-serif;
+      font-family: {SANS};
       color: {INK};
+      -webkit-font-smoothing: antialiased;
   }}
 
-  /* ---- masthead ---- */
+  /* ---- masthead: compact bar, brand left, live context right ---- */
   .bi-mast {{
-      display:flex; align-items:baseline; justify-content:space-between;
-      border-bottom:1px solid {RULE}; padding-bottom:.7rem; margin-bottom:1.6rem;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid {RULE}; padding-bottom:.85rem; margin-bottom:1.8rem;
+      gap:1rem; flex-wrap:wrap;
   }}
   .bi-mast .bi-brand {{
-      font-size:.95rem; font-weight:650; letter-spacing:-.01em; color:{INK};
+      font-size:.95rem; font-weight:650; letter-spacing:-.015em; color:{INK};
   }}
-  .bi-mast .bi-ctx {{ font-size:.78rem; color:{INK_FAINT}; }}
-
-  /* ---- section headings: quiet, structural ---- */
-  .bi-sec {{
-      font-size:.7rem; font-weight:700; letter-spacing:.09em;
+  .bi-mast .bi-ctx {{
+      font-size:.74rem; color:{INK_SOFT}; display:flex; align-items:center;
+      gap:.55rem;
+  }}
+  .bi-mast .bi-ctx-tag {{
+      font-size:.62rem; font-weight:700; letter-spacing:.08em;
       text-transform:uppercase; color:{INK_FAINT};
-      margin:2.1rem 0 .7rem 0;
+      background:{CANVAS_SOFT}; border:1px solid {RULE};
+      padding:.22rem .5rem; border-radius:5px;
   }}
 
-  /* ---- level 1: the movement ---- */
-  .bi-kpi {{ font-size:.85rem; color:{INK_SOFT}; margin-bottom:.15rem;
-             letter-spacing:.01em; }}
-  .bi-move {{
-      font-size:3.1rem; font-weight:680; line-height:1.02;
-      letter-spacing:-.035em; color:{INK}; margin:0;
+  /* ---- section headings: quiet, structural, ruled ---- */
+  .bi-sec {{
+      font-size:.68rem; font-weight:700; letter-spacing:.1em;
+      text-transform:uppercase; color:{INK_FAINT};
+      margin:2.3rem 0 .85rem 0; padding-bottom:.5rem;
+      border-bottom:1px solid {RULE_SOFT};
   }}
-  .bi-window {{ font-size:.85rem; color:{INK_SOFT}; margin-top:.35rem; }}
+
+  /* ---- level 1: the movement ----
+     Tabular figures, because this is an instrument reading. Kept large: the
+     Amber Alert finding that recognition beats recollection is why it is the
+     biggest element on the page, and the visual reference's smaller metric
+     size would trade that away for tidiness. */
+  .bi-kpi {{
+      font-size:.66rem; color:{INK_FAINT}; margin-bottom:.5rem;
+      letter-spacing:.1em; text-transform:uppercase; font-weight:700;
+  }}
+  .bi-move {{
+      font-family:{MONO};
+      font-size:2.7rem; font-weight:600; line-height:1.0;
+      letter-spacing:-.03em; color:{INK}; margin:0;
+      font-variant-numeric: tabular-nums;
+  }}
+  .bi-window {{
+      font-family:{MONO}; font-size:.8rem; color:{INK_SOFT};
+      margin-top:.55rem; font-variant-numeric: tabular-nums;
+  }}
 
   /* ---- chips ---- */
   .bi-chip {{
-      display:inline-block; padding:.2rem .55rem; border-radius:3px;
-      font-size:.68rem; font-weight:700; letter-spacing:.07em;
+      display:inline-block; padding:.28rem .7rem; border-radius:999px;
+      font-size:.64rem; font-weight:700; letter-spacing:.08em;
       text-transform:uppercase; border:1px solid transparent;
+      white-space:nowrap;
   }}
   .bi-chip-material {{ background:{ACCENT_SOFT}; color:{ACCENT};
                        border-color:#c9d6ea; }}
@@ -107,69 +166,110 @@ def css() -> str:
   .bi-chip-caution  {{ background:{CAUTION_SOFT}; color:{CAUTION};
                        border-color:#e8dcb8; }}
 
-  /* ---- epistemic classes (Part 5) ---- */
+  /* ---- epistemic classes (Part 5) — unchanged in meaning ---- */
   .bi-claim {{
-      border-left:3px solid; padding:.55rem .8rem; margin:.4rem 0;
-      border-radius:0 3px 3px 0; font-size:.9rem; line-height:1.5;
+      border-left:3px solid; padding:.7rem .95rem; margin:.5rem 0;
+      border-radius:0 8px 8px 0; font-size:.88rem; line-height:1.6;
   }}
   .bi-claim .bi-tag {{
       display:block; font-size:.6rem; font-weight:700; letter-spacing:.1em;
-      opacity:.75; margin-bottom:.22rem;
+      opacity:.8; margin-bottom:.3rem;
   }}
 
   /* ---- cards ---- */
   .bi-card {{
-      border:1px solid {RULE}; border-radius:5px; padding:.85rem 1rem;
-      background:{CANVAS}; margin-bottom:.55rem;
+      border:1px solid {RULE}; border-radius:10px; padding:1rem 1.1rem;
+      background:{CANVAS}; margin-bottom:.7rem;
   }}
-  .bi-card-head {{ font-size:.82rem; font-weight:650; color:{INK};
-                   margin-bottom:.2rem; }}
-  .bi-card-meta {{ font-size:.72rem; color:{INK_FAINT}; }}
-  .bi-card-body {{ font-size:.85rem; color:{INK_SOFT}; line-height:1.55;
-                   margin-top:.35rem; }}
+  .bi-card-head {{ font-size:.85rem; font-weight:650; color:{INK};
+                   margin-bottom:.3rem; letter-spacing:-.01em; }}
+  .bi-card-meta {{ font-size:.7rem; color:{INK_FAINT}; letter-spacing:.01em; }}
+  .bi-card-body {{
+      font-size:.84rem; color:{INK_SOFT}; line-height:1.6; margin-top:.55rem;
+      background:{CANVAS_SOFT}; border:1px solid {RULE_SOFT};
+      border-radius:7px; padding:.6rem .75rem;
+  }}
 
   /* ---- reliability block ---- */
   .bi-rel {{ border:1px solid {RULE}; border-left:3px solid {ACCENT};
-            border-radius:0 5px 5px 0; padding:.85rem 1rem;
+            border-radius:0 10px 10px 0; padding:1rem 1.1rem;
             background:{CANVAS}; }}
-  .bi-rel-band {{ font-size:1.05rem; font-weight:700; letter-spacing:-.01em; }}
-  .bi-rel-basis {{ font-size:.83rem; color:{INK_SOFT}; margin-top:.28rem;
-                   line-height:1.5; }}
-  .bi-rel-caveat {{ font-size:.72rem; color:{INK_FAINT}; margin-top:.4rem;
-                    font-style:italic; }}
+  .bi-rel-band {{ font-size:1.02rem; font-weight:700; letter-spacing:-.015em; }}
+  .bi-rel-basis {{ font-size:.83rem; color:{INK_SOFT}; margin-top:.32rem;
+                   line-height:1.55; }}
+  .bi-rel-caveat {{ font-size:.72rem; color:{INK_FAINT}; margin-top:.45rem;
+                    font-style:italic; line-height:1.5; }}
+
+  /* ---- the action card: the one place with real presence ---- */
+  .bi-action {{
+      border:1px solid {RULE}; border-radius:14px; padding:1.5rem 1.6rem;
+      background:{CANVAS_SOFT}; margin-top:.3rem;
+  }}
+  .bi-rail {{
+      border-left:1px solid {RULE}; padding-left:1.3rem; height:100%;
+  }}
+  .bi-rail-k {{
+      font-size:.6rem; font-weight:700; letter-spacing:.09em;
+      text-transform:uppercase; color:{INK_FAINT}; margin-bottom:.15rem;
+  }}
+  .bi-rail-v {{ font-size:.82rem; color:{INK}; margin-bottom:.95rem;
+                line-height:1.45; }}
+  .bi-rail-v.mono {{ font-family:{MONO}; font-weight:600;
+                     font-variant-numeric: tabular-nums; }}
 
   /* ---- abstention: quieter than a finding, on purpose ---- */
   .bi-abstain {{
-      border:1px solid {RULE}; border-radius:5px; padding:1.4rem 1.5rem;
+      border:1px solid {RULE}; border-radius:12px; padding:1.6rem 1.7rem;
       background:{CANVAS_SOFT};
   }}
-  .bi-abstain-title {{ font-size:1.15rem; font-weight:650; color:{INK};
-                       margin-bottom:.4rem; }}
-  .bi-abstain-body {{ font-size:.9rem; color:{INK_SOFT}; line-height:1.6; }}
+  .bi-abstain-title {{ font-size:1.12rem; font-weight:650; color:{INK};
+                       margin-bottom:.5rem; letter-spacing:-.015em; }}
+  .bi-abstain-body {{ font-size:.88rem; color:{INK_SOFT}; line-height:1.65; }}
 
   /* ---- key/value rows for audit ---- */
-  .bi-kv {{ display:flex; padding:.32rem 0; border-bottom:1px solid #f0f2f5;
-            font-size:.8rem; }}
+  .bi-kv {{ display:flex; padding:.38rem 0; border-bottom:1px solid {RULE_SOFT};
+            font-size:.79rem; }}
   .bi-kv .k {{ width:230px; color:{INK_FAINT}; flex-shrink:0; }}
-  .bi-kv .v {{ color:{INK}; font-family:ui-monospace, "SF Mono", Menlo,
-               Consolas, monospace; font-size:.76rem; word-break:break-all; }}
+  .bi-kv .v {{ color:{INK}; font-family:{MONO};
+               font-size:.75rem; word-break:break-all; }}
 
   /* ---- primary action ---- */
   .stButton > button[kind="primary"] {{
       background:{ACCENT}; border:1px solid {ACCENT}; font-weight:600;
-      border-radius:4px;
+      border-radius:9px; padding:.6rem 1.4rem; letter-spacing:.01em;
+  }}
+  .stButton > button[kind="secondary"] {{
+      border-radius:9px; border:1px solid {RULE};
   }}
 
   /* ---- tabs: questions, not modules ---- */
-  .stTabs [data-baseweb="tab-list"] {{ gap:1.6rem; border-bottom:1px solid {RULE}; }}
+  .stTabs [data-baseweb="tab-list"] {{ gap:1.9rem; border-bottom:1px solid {RULE}; }}
   .stTabs [data-baseweb="tab"] {{
-      font-size:.83rem; font-weight:550; padding:.4rem 0; color:{INK_FAINT};
+      font-size:.7rem; font-weight:700; padding:.5rem 0; color:{INK_FAINT};
+      letter-spacing:.09em; text-transform:uppercase;
   }}
   .stTabs [aria-selected="true"] {{ color:{INK}; }}
 
+  /* ---- sidebar: a quiet control rail, not a second workspace ---- */
+  section[data-testid="stSidebar"] {{
+      background:{CANVAS}; border-right:1px solid {RULE};
+  }}
+  section[data-testid="stSidebar"] .block-container {{
+      background:transparent; border:0; box-shadow:none;
+      border-radius:0; margin:0; padding-top:1.5rem;
+  }}
+
   /* ---- progress ---- */
-  .bi-step {{ font-size:.86rem; color:{INK_SOFT}; padding:.16rem 0; }}
+  .bi-step {{ font-size:.85rem; color:{INK_SOFT}; padding:.18rem 0; }}
   .bi-step .done {{ color:{SUPPORT}; font-weight:700; }}
+
+  /* ---- expanders: recede until wanted ---- */
+  .streamlit-expanderHeader, [data-testid="stExpander"] summary {{
+      font-size:.8rem; color:{INK_SOFT};
+  }}
+  [data-testid="stExpander"] {{
+      border:1px solid {RULE}; border-radius:10px; background:{CANVAS};
+  }}
 </style>
 """
 

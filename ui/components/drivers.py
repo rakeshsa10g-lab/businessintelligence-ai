@@ -147,8 +147,7 @@ def render(result: RunResult) -> None:
     show_all = st.session_state.get("show_all_drivers", False)
     visible = rows if show_all else rows[:DEFAULT_VISIBLE]
 
-    st.plotly_chart(_figure(visible), width='stretch',
-                    config={"displayModeBar": False})
+    st.plotly_chart(_figure(visible))
 
     # States the colour rule at the point of use rather than leaving the reader
     # to infer it — and keeps the UI and the UX mapping saying the same thing.

@@ -85,27 +85,29 @@ def render(result: RunResult, scenario_label: str) -> None:
     st.markdown(
         f"""
         <div class="bi-kpi">{n['kpi']} · {scenario_label}</div>
-        <div style="display:flex;align-items:baseline;gap:1.1rem;
+        <div style="display:flex;align-items:center;gap:1.1rem;
                     flex-wrap:wrap;">
           <div class="bi-move">{magnitude}</div>
-          <div style="padding-bottom:.5rem;">{chip}</div>
+          <div>{chip}</div>
         </div>
-        <div class="bi-window">{window}</div>
         """,
         unsafe_allow_html=True,
     )
 
-    # The rupee figure is a second-order fact: useful, but it must not compete
-    # with the percentage for the reader's first glance.
+    # The rupee figure and the window are second-order facts: useful, but they
+    # must not compete with the percentage for the reader's first glance. They
+    # share one monospace line beneath it, the way an instrument prints its
+    # reading and its range together.
+    magnitudes = ""
     if n["abs"] is not None and n["baseline"] is not None:
-        st.markdown(
-            f"""<div style="font-size:.84rem;color:{theme.INK_SOFT};
-                 margin-top:.5rem;">
-                 {abs(n['abs']):,.0f} INR against a baseline of
-                 {n['baseline']:,.0f} INR
-                 </div>""",
-            unsafe_allow_html=True,
-        )
+        magnitudes = (f"{abs(n['abs']):,.0f} INR against a baseline of "
+                      f"{n['baseline']:,.0f} INR")
+
+    parts = [p for p in (magnitudes, window) if p]
+    if parts:
+        joined = '<span style="opacity:.4;"> · </span>'.join(parts)
+        st.markdown(f'<div class="bi-window">{joined}</div>',
+                    unsafe_allow_html=True)
 
 
 def render_answer_line(result: RunResult) -> None:

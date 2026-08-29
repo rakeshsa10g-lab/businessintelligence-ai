@@ -110,7 +110,7 @@ graph/          LangGraph state machine, checkpoints, telemetry, lineage
 feedback/       typed analyst outcomes
 ui/             Streamlit decision workspace (presentation only)
 tests/          18 test modules, 574 tests
-eval/           23 evaluation and audit reports
+eval/           27 evaluation and audit reports
 submission/     business proposal, pitch deck, rendered PDF, deck source
 docs/           sources of truth, architecture, decision record, deployment
 ```
@@ -136,10 +136,11 @@ Full set in `CLAUDE.md`. The load-bearing ones:
 |---|---|
 | `submission/R2_BUSINESS_PROPOSAL.md` | R2-DEL-1 — business proposal, 17 sections |
 | `submission/R2_BUSINESS_PROPOSAL_SOURCE.md` | Every claim mapped to its evidence class and artefact |
-| `submission/R2_BUSINESSINTELLIGENCE_PITCH.pdf` | R2-DEL-3 — the rendered 11-slide pitch deck |
+| `submission/R2_BUSINESSINTELLIGENCE_PITCH.pdf` | R2-DEL-3 — the rendered 11-slide pitch deck (built and audited in this repo) |
 | `submission/R2_PITCH_DECK.md` | Deck build spec, slide by slide |
 | `submission/R2_PITCH_SPEAKER_NOTES.md` | Talk track, four timing plans, Q&A index |
 | `submission/deck/` | Deck source: HTML slides, vendored design system, render pipeline |
+| `submission/wireframe/` | Excalidraw wireframe for the 6-slide official Accenture-template deck submitted through the competition portal — a content/layout plan, not the rendered final |
 
 The prototype itself is R2-DEL-2.
 
@@ -166,6 +167,10 @@ The prototype itself is R2-DEL-2.
 | `eval/judge_defense.md` | 24 anticipated questions, weak answers flagged |
 | `eval/final_demo_script.md` | Three-minute live demo, beat by beat |
 | `eval/prototype_readiness.md` | 14-area readiness matrix |
+| `eval/product_judge_audit.md` | Independent adversarial product/UX/judge audit — first pass, scored 74/100 |
+| `eval/product_judge_audit_v2.md` | Second-pass audit of the current state, scored 79/100 against the same rubric |
+| `eval/technical_competition_audit.md` | Independent technical teardown — concurrency, verification, retrieval, performance |
+| `eval/final_transmission_audit.md` | Record of the pitch/product transmission-gap fixes made between the two judge audits |
 
 ## Known limitations
 
@@ -176,4 +181,4 @@ Stated here rather than discovered later. Full detail in
 - **All evaluation is synthetic.** Ground truth is known by construction. These are not production accuracy figures.
 - **No live LLM evaluation.** No API key was available; model latency, token usage and cost are unmeasured and deliberately not estimated.
 - **No baseline measurement**, so no time-saving or ROI claim is made.
-- **Roughly two concurrent users.** DuckDB permits one writer and the audit log writes on every read, so concurrency is a storage migration, not a worker-count change.
+- **Limited concurrent usage.** The prototype is designed for small-scale demonstration workloads. Production deployment requires connection isolation and a server-grade persistence layer.
